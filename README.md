@@ -1,114 +1,144 @@
 # 🦽 Movimento Livre - Plugin de Empréstimo Solidário de Cadeiras de Rodas
 
-**Movimento Livre** é um plugin WordPress que transforma o WooCommerce em um sistema social de **empréstimos gratuitos de cadeiras de rodas**, criado para o Instituto Bernardo Ferreira - *Um Legado em Movimento*.
+**Movimento Livre** é um plugin WordPress que transforma o WooCommerce em um sistema social de **empréstimos gratuitos de cadeiras de rodas**, desenvolvido para o Instituto Bernardo Ferreira - *Um Legado em Movimento*.
 
-Com adaptação completa da interface do WooCommerce, o plugin elimina termos comerciais como "venda" e "produto", e os substitui por uma linguagem adequada ao contexto social e humanitário do projeto.
+Totalmente adaptado para a realidade do terceiro setor, o plugin transforma a lógica de produtos e pedidos do WooCommerce em uma estrutura robusta de **empréstimos, devoluções, avaliações e controle de estoque social**.
 
 ---
 
 ## 🎯 Propósito Social
 
-Oferecer **autonomia e dignidade** por meio de um sistema confiável de **empréstimo gratuito de cadeiras de rodas**, com controle por CPF, geração de comprovantes e formulários digitais.
+Oferecer **autonomia, dignidade e mobilidade** a pessoas com deficiência ou mobilidade reduzida por meio de um sistema gratuito, digital e seguro de empréstimo de cadeiras de rodas.
 
 ---
 
-## ⚙️ Funcionalidades Principais
+## 🛠️ Como Funciona
 
-### 🛒 WooCommerce como Sistema de Empréstimo
+### 🔁 Fluxo Geral
 
-- Cada **cadeira de rodas** é cadastrada como uma **Cadeira** (produto WooCommerce renomeado)
-- A **TAG física da cadeira** é usada como **SKU**, permitindo rastreabilidade
-- Utilização dos **Empréstimos** (Pedidos WooCommerce renomeados) como registros oficiais
-- Controle de estoque automático (saída na retirada, retorno na devolução)
+1. **Solicitação**
+   - O usuário solicita uma cadeira (produto).
+   - O pedido entra como `Aguardando`.
+   - O sistema exige o preenchimento do **Formulário de Empréstimo**.
+   - Ao enviar o formulário:
+     - Status do Pedido = **Emprestado**
+     - Estoque reduzido
+     - Status da Cadeira = **Emprestado**
 
----
+2. **Devolução**
+   - O usuário preenche o **Formulário de Devolução**.
+   - Ao enviar o formulário:
+     - Status do Pedido = **Concluído**
+     - Estoque **não retorna ainda**
+     - Status da Cadeira = **Em Avaliação**
+     - É gerado um **Formulário de Avaliação Interna**
 
-### 🔁 Status Personalizados
+3. **Avaliação Interna**
+   - Um colaborador preenche o **Formulário de Avaliação** com:
+     - Estado da cadeira
+     - Observações técnicas
+     - Nome de quem avaliou
+     - Data da avaliação
+   - Com base no resultado da avaliação:
 
-Apenas **três status são utilizados**, refletindo o fluxo real de um empréstimo:
+#### ✔️ Se **Aprovada**:
+- Status da Cadeira = **Pronta**
+- Cadeira **retorna ao estoque**
 
-- 🟡 `Aguardando`: Pedido feito, aguardando envio do formulário de retirada
-- 🟢 `Emprestado`: Formulário de retirada recebido, cadeira entregue
-- ✅ `Devolvido`: Formulário de devolução enviado e cadeira devolvida ao estoque
+#### ❌ Se **Reprovada**:
+- Status da Cadeira = **Em Manutenção**
+- Gera um **novo formulário de avaliação** após o conserto
 
-**Transições automáticas:**
+> O novo formulário também será preenchido por um colaborador, reiniciando o processo de verificação:
 
-- Ao enviar o **formulário de retirada**, o status muda para **Emprestado**
-- Ao enviar o **formulário de devolução**, o status muda para **Devolvido**, e o item retorna ao estoque
+##### ✔️ Se **Aprovada** na reavaliação:
+- Status da Cadeira = **Pronta**
+- Cadeira retorna ao estoque
 
----
-
-### 👥 Controle por CPF (Multicliente)
-
-- Cada pessoa identificada por CPF pode ter **até 2 empréstimos simultâneos**
-- Sistema impede novos empréstimos caso o limite esteja ativo
-- Histórico completo de empréstimos por CPF
-
----
-
-### 📄 Formulários e Comprovantes
-
-- **Formulário de Retirada (PDF)**:
-  - Dados do solicitante
-  - TAG da cadeira
-  - Termo de responsabilidade
-  - Campo para assinatura (manual ou digital)
-
-- **Formulário de Devolução**:
-  - Avaliação do estado da cadeira
-  - Observações e condições de retorno
-  - Documento anexado diretamente ao Empréstimo (pedido Woo)
-
----
-
-### 📊 Relatórios Gerenciais
-
-- Filtros por:
-  - CPF
-  - TAG/SKU da cadeira
-  - Período e status (Emprestado, Atrasado, Devolvido)
-- Exportação para CSV
-- Histórico por beneficiário
+##### ❌ Se **Reprovada novamente**:
+- A cadeira permanece com status **Em Manutenção**
+- Um novo ciclo de manutenção e avaliação pode ser iniciado
 
 ---
 
-### 🧾 Renomeação da Interface do WooCommerce
+## 🧾 Relacionamento entre Entidades
 
-Para refletir o propósito do projeto, a interface do WooCommerce é adaptada:
+| Entidade         | Formulário Vinculado           | Observações                              |
+|------------------|-------------------------------|------------------------------------------|
+| Pedido (Empréstimo) | Empréstimo + Devolução         | Vinculados ao CPF e à TAG da cadeira     |
+| Produto (Cadeira) | Avaliações Internas (histórico) | Com nome, data e resultado de quem avaliou ou reparou |
+
+---
+
+## 🔒 Controle por CPF
+
+- Cada CPF pode ter no máximo **2 empréstimos ativos simultaneamente**
+- Novas solicitações são bloqueadas enquanto esse limite estiver ativo
+- Todo o histórico de empréstimos e devoluções é vinculado ao CPF
+
+---
+
+## 🛒 Adaptação do WooCommerce
+
+### Renomeações
 
 | Original WooCommerce | Movimento Livre        |
 |----------------------|------------------------|
 | Produtos             | Cadeiras               |
 | Pedidos              | Empréstimos            |
+| On Hold              | Aguardando             |
 | Processando          | Emprestado             |
 | Concluído            | Devolvido              |
-| On-hold              | Aguardando             |
+
+### Novos Status de Produto (Cadeira)
+
+| Status da Cadeira   | Significado                                                                 |
+|---------------------|-----------------------------------------------------------------------------|
+| Pronta              | Disponível para empréstimo                                                  |
+| Emprestado          | Está vinculada a um pedido ativo                                            |
+| Em Avaliação        | Devolvida, aguardando avaliação técnica                                     |
+| Em Manutenção       | Reprovada na avaliação, aguardando novo formulário após conserto           |
 
 ---
 
-## 🧱 Módulos Ativos
+## 📄 Formulários e Geração de Documentos
 
-- 📄 **Formulários** – geração de PDFs de retirada e devolução
-- 🔒 **Regras de CPF** – limite por CPF simultâneo
-- 🧮 **Relatórios** – visão gerencial por status, CPF e TAG
-- 📎 **Anexos no Empréstimo** – formulários vinculados ao histórico
-- 🔔 **Notificações (opcional)** – e-mails ou WhatsApp para lembretes
+- **Formulário de Empréstimo**: preenchido pelo usuário
+- **Formulário de Devolução**: preenchido pelo usuário
+- **Formulário de Avaliação Interna**: preenchido por colaborador (com histórico)
+- Todos os formulários são salvos como PDF e vinculados ao respectivo Pedido ou Produto
+- O histórico de avaliações fica armazenado no Produto com nome, data e observações
 
 ---
 
-## 🧰 Requisitos Técnicos
+## 📊 Relatórios e Gerenciamento
+
+- Relatórios por:
+  - CPF
+  - TAG (SKU)
+  - Status do Pedido
+  - Status da Cadeira
+  - Período
+
+- Exportação em CSV
+
+---
+
+## 🔔 Notificações
+
+- Envio automático de:
+  - Lembretes de devolução
+  - Confirmações de status
+  - Solicitações internas de avaliação/manutenção
+
+---
+
+## 📦 Requisitos Técnicos
 
 - WordPress 6.0+
 - WooCommerce 7.0+
 - PHP 8.0+
-- Extensão `dompdf` ou `TCPDF` para gerar PDFs
-
----
-
-## 🤝 Apoio Social
-
-> “O Movimento Livre nasceu para levar liberdade, mobilidade e respeito às pessoas. Com ele, a solidariedade ganha forma, registro e estrutura.”  
-> — Instituto Bernardo Ferreira
+- Extensão para geração de PDFs (`dompdf` ou `TCPDF`)
 
 ---
 
@@ -118,11 +148,18 @@ Licenciado sob a licença MIT.
 
 ---
 
+## ❤️ Frase do Instituto
+
+> “Mobilidade é liberdade. E liberdade é dignidade. O Movimento Livre nasceu para garantir que ninguém fique para trás.”  
+> — Instituto Bernardo Ferreira
+
+---
+
 ## 🙋 Como Contribuir
 
-Este é um projeto social e de código aberto. Contribuições são bem-vindas em:
+Projeto de código aberto e impacto social. Contribuições são bem-vindas em:
 
 - Código e testes
-- UI/UX acessível
-- Integrações com redes públicas de saúde
-- Traduções e suporte a ONGs locais
+- Integração com redes públicas de saúde
+- Design acessível
+- Manual para replicação por outras ONGs
