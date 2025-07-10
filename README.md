@@ -99,7 +99,27 @@ Oferecer **autonomia, dignidade e mobilidade** a pessoas com deficiência ou mob
 | Em Avaliação        | Devolvida, aguardando avaliação técnica                                     |
 | Em Manutenção       | Reprovada na avaliação, aguardando novo formulário após conserto           |
 
+### 🔁 Status Personalizados do Pedido (Empréstimo)
+
+Apenas **três status são utilizados**, refletindo o fluxo real de um empréstimo:
+
+- 🟡 `Aguardando`: Pedido feito, aguardando envio do formulário de retirada
+- 🟢 `Emprestado`: Formulário de retirada recebido, cadeira entregue
+- ✅ `Devolvido`: Formulário de devolução enviado e cadeira devolvida ao estoque
+
+**Transições automáticas:**
+
+- Ao enviar o **formulário de retirada**, o status muda para **Emprestado**
+- Ao enviar o **formulário de devolução**, o status muda para **Devolvido**
+
 ---
+
+### 🔁 Status Personalizados do Produto (Cadeira)
+
+- 🟢 `Pronta`: Quando a Cadeira está pronta para ser emprestada. (Permite Fazer Empréstimo (Pedido)
+- 🔵 `Emprestado`: Quando a Cadeira está Emprestada para um CPF. (Não permite fazer Empréstimo (Pedido) da Cadeira com Esse Status)
+- 🟡 `Em Avaliaçao`: Quando a cadeira é devolvida, gera o formulário de avaliaçao interno. (Não permite fazer Empréstimo (Pedido) da Cadeira com Esse Status)
+- 🔴 `Em Manutençao`: Quando o formulário de avaliação não aprova a cadeira para ser emprestada, a cadeira vai para manutenção e gera um novo formulário de avaliação (Não permite fazer Empréstimo (Pedido) da Cadeira com Esse Status)
 
 ## 📄 Formulários e Geração de Documentos
 
