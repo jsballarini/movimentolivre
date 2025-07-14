@@ -8,6 +8,8 @@
 
 **Plugin WordPress que transforma o WooCommerce em um sistema social de empréstimos gratuitos de cadeiras de rodas para o Instituto Bernardo Ferreira - Um Legado em Movimento.**
 
+**🆕 Versão 0.0.2**: Agora com sistema completo de **Padrinho/Responsável** - coletamos dados completos do responsável pelo usuário da cadeira de rodas para maior segurança e controle.
+
 ---
 
 ## 📋 Índice
@@ -59,6 +61,7 @@ O Instituto Bernardo Ferreira é uma organização dedicada a proporcionar mobil
 - **Geração de PDFs**: Formulários automáticos para todas as etapas
 - **Templates Customizáveis**: Personalize documentos conforme necessidade
 - **Armazenamento Seguro**: Proteção de arquivos sensíveis
+- **Dados do Padrinho**: Informações completas do responsável incluídas nos PDFs
 
 ### 📧 Notificações Inteligentes
 - **Emails Automáticos**: Confirmações e lembretes
@@ -179,6 +182,7 @@ Crie páginas e utilize os shortcodes:
 1. **Solicitação**:
    - Acesse a página de empréstimo
    - Preencha o formulário com dados pessoais
+   - **NOVO**: Informe dados completos do Padrinho/Responsável
    - Selecione a cadeira desejada
    - Envie a solicitação
 
@@ -461,6 +465,7 @@ Este projeto foi inspirado pela necessidade real de democratizar o acesso a equi
 ### Roadmap
 
 - [x] **v0.0.1** - Sistema básico de empréstimos
+- [x] **v0.0.2** - Sistema de Padrinho/Responsável
 - [ ] **v0.1.0** - Sistema de avaliações e manutenção
 - [ ] **v0.2.0** - Relatórios avançados e analytics
 - [ ] **v0.3.0** - Aplicativo mobile

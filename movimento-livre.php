@@ -3,7 +3,7 @@
  * Plugin Name: Movimento Livre
  * Plugin URI: https://github.com/jsballarini
  * Description: Sistema social de empréstimos gratuitos de cadeiras de rodas para o Instituto Bernardo Ferreira - Um Legado em Movimento. Transforma o WooCommerce em uma plataforma robusta de empréstimos, devoluções, avaliações e controle de estoque social.
- * Version: 0.0.1
+ * Version: 0.0.2
  * Author: Juliano Ballarini e Leonardo Soares
  * Author URI: https://github.com/jsballarini
  * Text Domain: movimento-livre
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define constantes do plugin
-define( 'MOVLIV_VERSION', '0.0.1' );
+define( 'MOVLIV_VERSION', '0.0.2' );
 define( 'MOVLIV_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'MOVLIV_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'MOVLIV_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );

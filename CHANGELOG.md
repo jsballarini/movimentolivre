@@ -5,6 +5,50 @@ Todas as mudanças notáveis deste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/spec/v2.0.0.html).
 
+## [0.0.2] - 2025-07-15
+
+### 🚀 NOVAS FUNCIONALIDADES
+
+#### **Sistema de Padrinho/Responsável** (NOVO - DADOS CRÍTICOS)
+- **Funcionalidade**: Adicionados campos obrigatórios do Padrinho no formulário de empréstimo
+- **Campos implementados**:
+  - ✅ Nome do Padrinho (obrigatório)
+  - ✅ CPF do Padrinho (obrigatório, com formatação automática)
+  - ✅ Endereço completo (rua, número, complemento)
+  - ✅ Cidade e Estado (dropdown com todos os estados brasileiros)
+  - ✅ CEP (obrigatório, com formatação automática)
+  - ✅ Telefone/WhatsApp (obrigatório, com formatação automática)
+- **Armazenamento no banco**:
+  - ✅ `_movliv_padrinho_nome`
+  - ✅ `_movliv_padrinho_cpf`
+  - ✅ `_movliv_padrinho_endereco`
+  - ✅ `_movliv_padrinho_numero`
+  - ✅ `_movliv_padrinho_complemento`
+  - ✅ `_movliv_padrinho_cidade`
+  - ✅ `_movliv_padrinho_estado`
+  - ✅ `_movliv_padrinho_cep`
+  - ✅ `_movliv_padrinho_telefone`
+- **Interface administrativa**:
+  - ✅ Nova seção destacada no admin do pedido
+  - ✅ Nova coluna "Padrinho" na lista de pedidos
+  - ✅ Formatação visual organizada com endereço completo
+- **UX/UI melhorada**:
+  - ✅ Seção destacada com descrição explicativa
+  - ✅ Campos agrupados logicamente
+  - ✅ Formatação automática de CPF, CEP e telefone
+  - ✅ Layout responsivo para mobile
+- **Benefícios**:
+  - ✅ Controle completo do responsável pelo usuário da cadeira
+  - ✅ Dados estruturados para contato em emergências
+  - ✅ Informações completas para relatórios e auditoria
+  - ✅ Facilita acompanhamento e suporte aos usuários
+- **Arquivos modificados**: 
+  - `includes/class-formularios.php` (validação e salvamento)
+  - `includes/class-cpf-validator.php` (exibição no admin)
+  - `assets/css/frontend.css` (estilos da seção)
+  - `assets/js/frontend.js` (formatação automática)
+- **Resultado**: ✅ **DADOS COMPLETOS DO RESPONSÁVEL COLETADOS E ARMAZENADOS**
+
 ## [0.0.1] - 2025-07-13
 
 ### 🚀 NOVAS FUNCIONALIDADES
