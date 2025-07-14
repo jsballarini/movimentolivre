@@ -1,6 +1,6 @@
 # STATUS DE DESENVOLVIMENTO - Plugin Movimento Livre
 
-**Data da última atualização**: 13/01/2025  
+**Data da última atualização**: 14/07/2025  
 **Versão atual**: 0.0.1  
 **Status geral**: ✅ **FUNCIONAL E OPERACIONAL**
 
