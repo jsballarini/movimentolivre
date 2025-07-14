@@ -435,6 +435,7 @@ Este projeto está licenciado sob a **MIT License** - veja o arquivo [LICENSE](L
 ### Equipe
 
 - **Juliano Ballarini** - *Desenvolvimento Principal* - [@jsballarini](https://github.com/jsballarini)
+- **Leonardo Soares** - *Desenvolvimento Principal* - [@Rox351](https://github.com/Rox351)
 - **Instituto Bernardo Ferreira** - *Conceito e Validação*
 
 ### Tecnologias

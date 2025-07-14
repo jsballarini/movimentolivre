@@ -4,7 +4,7 @@
  * Plugin URI: https://github.com/jsballarini
  * Description: Sistema social de empréstimos gratuitos de cadeiras de rodas para o Instituto Bernardo Ferreira - Um Legado em Movimento. Transforma o WooCommerce em uma plataforma robusta de empréstimos, devoluções, avaliações e controle de estoque social.
  * Version: 0.0.1
- * Author: Juliano Ballarini
+ * Author: Juliano Ballarini e Leonardo Soares
  * Author URI: https://github.com/jsballarini
  * Text Domain: movimento-livre
  * Domain Path: /languages
