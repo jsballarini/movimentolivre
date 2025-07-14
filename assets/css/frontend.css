@@ -1,0 +1,537 @@
+/**
+ * Estilos Frontend - Movimento Livre
+ * @package MovimentoLivre
+ * @since 0.0.1
+ */
+
+/* ==================== FORMULÁRIOS GERAIS ==================== */
+.movliv-form {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 30px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.1);
+}
+
+.movliv-form h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #333;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.movliv-form-group {
+    margin-bottom: 20px;
+}
+
+.movliv-form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #333;
+}
+
+.movliv-form-group label.required::after {
+    content: " *";
+    color: #e74c3c;
+}
+
+.movliv-form-group input,
+.movliv-form-group select,
+.movliv-form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.movliv-form-group input:focus,
+.movliv-form-group select:focus,
+.movliv-form-group textarea:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.movliv-form-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.movliv-form-group .form-help {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* ==================== BOTÕES ==================== */
+.movliv-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background: #3498db;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.movliv-btn:hover {
+    background: #2980b9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,.2);
+}
+
+.movliv-btn:active {
+    transform: translateY(0);
+}
+
+.movliv-btn.btn-primary {
+    background: #3498db;
+}
+
+.movliv-btn.btn-success {
+    background: #27ae60;
+}
+
+.movliv-btn.btn-danger {
+    background: #e74c3c;
+}
+
+.movliv-btn.btn-warning {
+    background: #f39c12;
+}
+
+.movliv-btn.btn-block {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.movliv-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.movliv-btn:disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* ==================== ALERTAS E MENSAGENS ==================== */
+.movliv-alert {
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 4px;
+    border-left: 4px solid;
+}
+
+.movliv-alert.alert-success {
+    background: #d4edda;
+    border-color: #27ae60;
+    color: #155724;
+}
+
+.movliv-alert.alert-error {
+    background: #f8d7da;
+    border-color: #e74c3c;
+    color: #721c24;
+}
+
+.movliv-alert.alert-warning {
+    background: #fff3cd;
+    border-color: #f39c12;
+    color: #856404;
+}
+
+.movliv-alert.alert-info {
+    background: #d1ecf1;
+    border-color: #3498db;
+    color: #0c5460;
+}
+
+/* ==================== SHORTCODES ESPECÍFICOS ==================== */
+
+/* Lista de Cadeiras */
+.movliv-cadeiras-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.movliv-cadeira-item {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.movliv-cadeira-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,.15);
+}
+
+.movliv-cadeira-item h3 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 18px;
+}
+
+.movliv-cadeira-item .status {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+}
+
+.movliv-cadeira-item .status.disponivel {
+    background: #d4edda;
+    color: #27ae60;
+}
+
+.movliv-cadeira-item .status.emprestado {
+    background: #fff3cd;
+    color: #f39c12;
+}
+
+.movliv-cadeira-item .status.manutencao {
+    background: #f8d7da;
+    color: #e74c3c;
+}
+
+/* Dashboard do Usuário */
+.movliv-user-dashboard {
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+.movliv-dashboard-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 8px;
+}
+
+.movliv-dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.movliv-stat-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,.1);
+}
+
+.movliv-stat-card h4 {
+    margin: 0 0 10px 0;
+    color: #666;
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.movliv-stat-card .number {
+    font-size: 24px;
+    font-weight: bold;
+    color: #3498db;
+}
+
+/* Histórico de Empréstimos */
+.movliv-historico {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,.1);
+}
+
+.movliv-historico h3 {
+    margin: 0;
+    padding: 20px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #ddd;
+    color: #333;
+}
+
+.movliv-historico-item {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.3s ease;
+}
+
+.movliv-historico-item:hover {
+    background: #f8f9fa;
+}
+
+.movliv-historico-item:last-child {
+    border-bottom: none;
+}
+
+.movliv-historico-item .item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.movliv-historico-item .item-title {
+    font-weight: 600;
+    color: #333;
+}
+
+.movliv-historico-item .item-status {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.movliv-historico-item .item-details {
+    color: #666;
+    font-size: 14px;
+}
+
+/* Busca de Cadeiras */
+.movliv-busca {
+    margin-bottom: 30px;
+}
+
+.movliv-busca-form {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.movliv-busca-form .form-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.movliv-busca-form .btn-buscar {
+    min-width: 120px;
+}
+
+/* Filtros */
+.movliv-filtros {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.movliv-filtros h4 {
+    margin: 0 0 15px 0;
+    color: #333;
+}
+
+.movliv-filtros-row {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.movliv-filtros-row label {
+    font-weight: 600;
+    color: #333;
+    margin-right: 5px;
+}
+
+.movliv-filtros-row select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* ==================== LOADING E ESTADOS ==================== */
+.movliv-loading {
+    text-align: center;
+    padding: 40px;
+}
+
+.movliv-loading-spinner {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.movliv-empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #666;
+}
+
+.movliv-empty-state h3 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+/* ==================== RESPONSIVIDADE ==================== */
+@media (max-width: 768px) {
+    .movliv-form {
+        margin: 10px;
+        padding: 20px;
+    }
+    
+    .movliv-cadeiras-list {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .movliv-dashboard-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .movliv-busca-form {
+        flex-direction: column;
+    }
+    
+    .movliv-busca-form .form-group {
+        min-width: auto;
+        width: 100%;
+    }
+    
+    .movliv-busca-form .btn-buscar {
+        width: 100%;
+    }
+    
+    .movliv-filtros-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .movliv-historico-item .item-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .movliv-form {
+        margin: 5px;
+        padding: 15px;
+    }
+    
+    .movliv-form h2 {
+        font-size: 20px;
+    }
+    
+    .movliv-dashboard-header {
+        padding: 15px;
+    }
+    
+    .movliv-stat-card {
+        padding: 15px;
+    }
+}
+
+/* ==================== IMPRESSÃO ==================== */
+@media print {
+    .movliv-btn,
+    .movliv-busca,
+    .movliv-filtros {
+        display: none;
+    }
+    
+    .movliv-form,
+    .movliv-cadeira-item,
+    .movliv-historico {
+        box-shadow: none;
+        border: 1px solid #000;
+    }
+}
+
+/* ==================== ACESSIBILIDADE ==================== */
+.movliv-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+}
+
+.movliv-form-group input:focus,
+.movliv-form-group select:focus,
+.movliv-form-group textarea:focus {
+    outline: 2px solid #3498db;
+    outline-offset: 2px;
+}
+
+/* ==================== DARK MODE SUPPORT ==================== */
+@media (prefers-color-scheme: dark) {
+    .movliv-form {
+        background: #2c3e50;
+        border-color: #34495e;
+        color: #ecf0f1;
+    }
+    
+    .movliv-form h2 {
+        color: #ecf0f1;
+    }
+    
+    .movliv-form-group label {
+        color: #ecf0f1;
+    }
+    
+    .movliv-form-group input,
+    .movliv-form-group select,
+    .movliv-form-group textarea {
+        background: #34495e;
+        border-color: #4a5d6b;
+        color: #ecf0f1;
+    }
+    
+    .movliv-cadeira-item {
+        background: #2c3e50;
+        border-color: #34495e;
+        color: #ecf0f1;
+    }
+    
+    .movliv-historico {
+        background: #2c3e50;
+        border-color: #34495e;
+    }
+    
+    .movliv-historico h3 {
+        background: #34495e;
+        color: #ecf0f1;
+    }
+} 

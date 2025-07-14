@@ -1,0 +1,492 @@
+/**
+ * Estilos Admin - Movimento Livre
+ * @package MovimentoLivre
+ * @since 0.0.1
+ */
+
+/* ==================== DASHBOARD GERAL ==================== */
+.movliv-dashboard {
+    padding: 20px 0;
+}
+
+.movliv-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.movliv-stat-card {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    transition: box-shadow 0.3s ease;
+}
+
+.movliv-stat-card:hover {
+    box-shadow: 0 2px 8px rgba(0,0,0,.1);
+}
+
+.movliv-stat-card h3 {
+    margin: 0 0 10px 0;
+    color: #1d2327;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.movliv-stat-number {
+    display: block;
+    font-size: 32px;
+    font-weight: bold;
+    color: #2271b1;
+    line-height: 1;
+    margin-bottom: 5px;
+}
+
+.stat-change {
+    font-size: 12px;
+    color: #363636;
+}
+
+/* ==================== CHARTS E GRÁFICOS ==================== */
+.movliv-charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.movliv-chart-container,
+.chart-box,
+.chart-container {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 20px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    min-height: 350px;
+    position: relative;
+}
+
+.movliv-chart-container canvas,
+.chart-box canvas,
+.chart-container canvas {
+    max-height: 300px !important;
+    width: 100% !important;
+}
+
+.movliv-chart-container h3,
+.chart-box h3 {
+    margin: 0 0 15px 0;
+    color: #1d2327;
+    font-size: 16px;
+    font-weight: 600;
+    border-bottom: 1px solid #dcdcde;
+    padding-bottom: 10px;
+}
+
+/* ==================== ATIVIDADES RECENTES ==================== */
+.movliv-recent-activity {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 20px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+
+.movliv-recent-activity h3 {
+    margin: 0 0 15px 0;
+    color: #1d2327;
+    font-size: 16px;
+    font-weight: 600;
+    border-bottom: 1px solid #dcdcde;
+    padding-bottom: 10px;
+}
+
+.movliv-activity-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.movliv-activity-item {
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.movliv-activity-item:last-child {
+    border-bottom: none;
+}
+
+.movliv-activity-date {
+    color: #646970;
+    font-size: 12px;
+}
+
+/* ==================== FILTROS ==================== */
+.movliv-filters {
+    background: #f6f7f7;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.movliv-filter-form {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.movliv-filter-form label {
+    font-weight: 600;
+    color: #1d2327;
+    margin-right: 5px;
+}
+
+.movliv-filter-form input,
+.movliv-filter-form select {
+    padding: 6px 8px;
+    border: 1px solid #8c8f94;
+    border-radius: 3px;
+    font-size: 13px;
+}
+
+.movliv-filter-form .button {
+    height: auto;
+    padding: 6px 12px;
+}
+
+/* ==================== GRID DE CADEIRAS ==================== */
+.movliv-cadeiras-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.movliv-cadeira-card {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 15px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.movliv-cadeira-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,.1);
+}
+
+.movliv-cadeira-card h4 {
+    margin: 0 0 10px 0;
+    color: #1d2327;
+    font-size: 16px;
+}
+
+.movliv-cadeira-card p {
+    margin: 5px 0;
+    color: #646970;
+    font-size: 14px;
+}
+
+.movliv-cadeira-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 8px;
+}
+
+/* ==================== STATUS BADGES ==================== */
+.movliv-status-badge,
+.status-pronta,
+.status-emprestado,
+.status-em_avaliacao,
+.status-em_manutencao {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-pronta {
+    background: #d1e7dd;
+    color: #0f5132;
+}
+
+.status-emprestado {
+    background: #fff3cd;
+    color: #664d03;
+}
+
+.status-em_avaliacao {
+    background: #cff4fc;
+    color: #055160;
+}
+
+.status-em_manutencao {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+/* ==================== NAVEGAÇÃO DE RELATÓRIOS ==================== */
+.movliv-reports-nav {
+    margin-bottom: 20px;
+}
+
+.movliv-report-section {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 20px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+
+/* ==================== ESTATÍSTICAS DE RELATÓRIOS ==================== */
+.movliv-dashboard-stats {
+    margin-bottom: 30px;
+}
+
+.movliv-stat-boxes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.movliv-stat-box {
+    background: #f6f7f7;
+    color: #1d2327;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, .1);
+}
+
+.movliv-stat-box h3 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.movliv-stat-box .stat-number {
+    display: block;
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.movliv-stat-box .stat-change {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+/* ==================== CONTAINERS DE CHARTS ==================== */
+.movliv-charts-container,
+.performance-charts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+/* ==================== KPIs GRID ==================== */
+.kpis-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.kpi-item {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+
+.kpi-item h4 {
+    margin: 0 0 8px 0;
+    color: #646970;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.kpi-value {
+    display: block;
+    font-size: 24px;
+    font-weight: bold;
+    color: #2271b1;
+}
+
+/* ==================== AVALIAÇÕES ==================== */
+.movliv-avaliacoes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 20px;
+}
+
+.movliv-avaliacao-card {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 20px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+}
+
+.movliv-avaliacao-card h3 {
+    margin: 0 0 15px 0;
+    color: #1d2327;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.movliv-avaliacao-card p {
+    margin: 8px 0;
+    color: #646970;
+    font-size: 14px;
+}
+
+.movliv-avaliacao-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+/* ==================== TABELAS CUSTOMIZADAS ==================== */
+.movliv-emprestimos-report table,
+.emprestimos-table table {
+    margin-top: 20px;
+}
+
+.movliv-emprestimos-report th,
+.emprestimos-table th {
+    background: #f6f7f7;
+    font-weight: 600;
+}
+
+.report-filters {
+    background: #f6f7f7;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+/* ==================== RESPONSIVIDADE ==================== */
+@media (max-width: 1200px) {
+    .movliv-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .movliv-charts-grid,
+    .movliv-charts-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .movliv-stats-grid,
+    .movliv-stat-boxes,
+    .kpis-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .movliv-cadeiras-grid,
+    .movliv-avaliacoes-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .movliv-filter-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .movliv-filter-form > * {
+        margin-bottom: 10px;
+    }
+    
+    .movliv-avaliacao-actions {
+        flex-direction: column;
+    }
+}
+
+/* ==================== ANIMAÇÕES ==================== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.movliv-stat-card,
+.movliv-cadeira-card,
+.movliv-avaliacao-card {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* ==================== UTILITÁRIOS ==================== */
+.movliv-text-center { text-align: center; }
+.movliv-text-right { text-align: right; }
+.movliv-mb-20 { margin-bottom: 20px; }
+.movliv-mt-20 { margin-top: 20px; }
+
+/* ==================== LOADING STATES ==================== */
+.movliv-loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #2271b1;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ==================== NOTIFICAÇÕES ==================== */
+.movliv-notification {
+    padding: 12px 15px;
+    margin: 15px 0;
+    border-radius: 4px;
+    border-left: 4px solid;
+}
+
+.movliv-notification.success {
+    background: #d1e7dd;
+    border-color: #198754;
+    color: #0f5132;
+}
+
+.movliv-notification.error {
+    background: #f8d7da;
+    border-color: #dc3545;
+    color: #721c24;
+}
+
+.movliv-notification.warning {
+    background: #fff3cd;
+    border-color: #ffc107;
+    color: #664d03;
+}
+
+.movliv-notification.info {
+    background: #cff4fc;
+    border-color: #0dcaf0;
+    color: #055160;
+} 
