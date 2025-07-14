@@ -90,6 +90,21 @@ class MOVLIV_Formularios {
                 MOVLIV_VERSION 
             );
             
+            wp_enqueue_style( 
+                'movliv-frontend', 
+                MOVLIV_PLUGIN_URL . 'assets/css/frontend.css', 
+                array(), 
+                MOVLIV_VERSION 
+            );
+            
+            wp_enqueue_script( 
+                'movliv-frontend', 
+                MOVLIV_PLUGIN_URL . 'assets/js/frontend.js', 
+                array( 'jquery' ), 
+                MOVLIV_VERSION, 
+                true 
+            );
+            
             wp_localize_script( 'movliv-forms', 'movliv_ajax', array(
                 'ajax_url' => admin_url( 'admin-ajax.php' ),
                 'nonce' => wp_create_nonce( 'movliv_form_nonce' ),
@@ -162,6 +177,17 @@ class MOVLIV_Formularios {
         update_post_meta( $order_id, '_movliv_emprestimo_responsavel', $form_data['responsavel_atendimento'] );
         update_post_meta( $order_id, '_movliv_emprestimo_observacoes', $form_data['observacoes'] );
         update_post_meta( $order_id, '_movliv_emprestimo_data', current_time('mysql') );
+        
+        // ✅ NOVO: Salva dados do Padrinho
+        update_post_meta( $order_id, '_movliv_padrinho_nome', $form_data['padrinho_nome'] );
+        update_post_meta( $order_id, '_movliv_padrinho_cpf', $form_data['padrinho_cpf'] );
+        update_post_meta( $order_id, '_movliv_padrinho_endereco', $form_data['padrinho_endereco'] );
+        update_post_meta( $order_id, '_movliv_padrinho_numero', $form_data['padrinho_numero'] );
+        update_post_meta( $order_id, '_movliv_padrinho_complemento', $form_data['padrinho_complemento'] );
+        update_post_meta( $order_id, '_movliv_padrinho_cidade', $form_data['padrinho_cidade'] );
+        update_post_meta( $order_id, '_movliv_padrinho_estado', $form_data['padrinho_estado'] );
+        update_post_meta( $order_id, '_movliv_padrinho_cep', $form_data['padrinho_cep'] );
+        update_post_meta( $order_id, '_movliv_padrinho_telefone', $form_data['padrinho_telefone'] );
 
         // ✅ CORREÇÃO: Gera PDF usando a classe PDF Generator
         $pdf_generator = MOVLIV_PDF_Generator::getInstance();
@@ -404,7 +430,15 @@ class MOVLIV_Formularios {
             'telefone' => 'Telefone',
             'endereco' => 'Endereço',
             'data_prevista_devolucao' => 'Data prevista de devolução',
-            'responsavel_atendimento' => 'Responsável pelo atendimento'
+            'responsavel_atendimento' => 'Responsável pelo atendimento',
+            'padrinho_nome' => 'Nome do Padrinho',
+            'padrinho_cpf' => 'CPF do Padrinho',
+            'padrinho_endereco' => 'Endereço do Padrinho',
+            'padrinho_numero' => 'Número do Endereço do Padrinho',
+            'padrinho_cidade' => 'Cidade do Padrinho',
+            'padrinho_estado' => 'Estado do Padrinho',
+            'padrinho_cep' => 'CEP do Padrinho',
+            'padrinho_telefone' => 'Telefone do Padrinho'
         );
         
         foreach ( $required_fields as $field => $label ) {
@@ -423,7 +457,16 @@ class MOVLIV_Formularios {
             'endereco' => sanitize_textarea_field( $data['endereco'] ),
             'data_prevista_devolucao' => sanitize_text_field( $data['data_prevista_devolucao'] ),
             'responsavel_atendimento' => sanitize_text_field( $data['responsavel_atendimento'] ),
-            'observacoes' => sanitize_textarea_field( $data['observacoes'] ?? '' )
+            'observacoes' => sanitize_textarea_field( $data['observacoes'] ?? '' ),
+            'padrinho_nome' => sanitize_text_field( $data['padrinho_nome'] ),
+            'padrinho_cpf' => sanitize_text_field( $data['padrinho_cpf'] ),
+            'padrinho_endereco' => sanitize_text_field( $data['padrinho_endereco'] ),
+            'padrinho_numero' => sanitize_text_field( $data['padrinho_numero'] ),
+            'padrinho_complemento' => sanitize_text_field( $data['padrinho_complemento'] ?? '' ),
+            'padrinho_cidade' => sanitize_text_field( $data['padrinho_cidade'] ),
+            'padrinho_estado' => sanitize_text_field( $data['padrinho_estado'] ),
+            'padrinho_cep' => sanitize_text_field( $data['padrinho_cep'] ),
+            'padrinho_telefone' => sanitize_text_field( $data['padrinho_telefone'] )
         );
     }
 
@@ -635,6 +678,91 @@ class MOVLIV_Formularios {
                 <div class="form-row">
                     <label for="observacoes"><?php _e( 'Observações', 'movimento-livre' ); ?></label>
                     <textarea id="observacoes" name="observacoes" rows="3"></textarea>
+                </div>
+                
+                <div class="form-section">
+                    <h4><?php _e( 'Dados do Padrinho/Responsável', 'movimento-livre' ); ?></h4>
+                    <p class="form-description"><?php _e( 'O Padrinho é o responsável pelo usuário da cadeira de rodas', 'movimento-livre' ); ?></p>
+                    
+                    <div class="form-row">
+                        <label for="padrinho_nome"><?php _e( 'Nome do Padrinho *', 'movimento-livre' ); ?></label>
+                        <input type="text" id="padrinho_nome" name="padrinho_nome" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <label for="padrinho_cpf"><?php _e( 'CPF do Padrinho *', 'movimento-livre' ); ?></label>
+                        <input type="text" id="padrinho_cpf" name="padrinho_cpf" maxlength="14" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <label for="padrinho_endereco"><?php _e( 'Endereço do Padrinho *', 'movimento-livre' ); ?></label>
+                        <input type="text" id="padrinho_endereco" name="padrinho_endereco" required>
+                    </div>
+                    
+                    <div class="form-row-group">
+                        <div class="form-row">
+                            <label for="padrinho_numero"><?php _e( 'Número *', 'movimento-livre' ); ?></label>
+                            <input type="text" id="padrinho_numero" name="padrinho_numero" required>
+                        </div>
+                        
+                        <div class="form-row">
+                            <label for="padrinho_complemento"><?php _e( 'Complemento', 'movimento-livre' ); ?></label>
+                            <input type="text" id="padrinho_complemento" name="padrinho_complemento">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row-group">
+                        <div class="form-row">
+                            <label for="padrinho_cidade"><?php _e( 'Cidade *', 'movimento-livre' ); ?></label>
+                            <input type="text" id="padrinho_cidade" name="padrinho_cidade" required>
+                        </div>
+                        
+                        <div class="form-row">
+                            <label for="padrinho_estado"><?php _e( 'Estado *', 'movimento-livre' ); ?></label>
+                            <select id="padrinho_estado" name="padrinho_estado" required>
+                                <option value=""><?php _e( 'Selecione...', 'movimento-livre' ); ?></option>
+                                <option value="AC">Acre</option>
+                                <option value="AL">Alagoas</option>
+                                <option value="AP">Amapá</option>
+                                <option value="AM">Amazonas</option>
+                                <option value="BA">Bahia</option>
+                                <option value="CE">Ceará</option>
+                                <option value="DF">Distrito Federal</option>
+                                <option value="ES">Espírito Santo</option>
+                                <option value="GO">Goiás</option>
+                                <option value="MA">Maranhão</option>
+                                <option value="MT">Mato Grosso</option>
+                                <option value="MS">Mato Grosso do Sul</option>
+                                <option value="MG">Minas Gerais</option>
+                                <option value="PA">Pará</option>
+                                <option value="PB">Paraíba</option>
+                                <option value="PR">Paraná</option>
+                                <option value="PE">Pernambuco</option>
+                                <option value="PI">Piauí</option>
+                                <option value="RJ">Rio de Janeiro</option>
+                                <option value="RN">Rio Grande do Norte</option>
+                                <option value="RS">Rio Grande do Sul</option>
+                                <option value="RO">Rondônia</option>
+                                <option value="RR">Roraima</option>
+                                <option value="SC">Santa Catarina</option>
+                                <option value="SP">São Paulo</option>
+                                <option value="SE">Sergipe</option>
+                                <option value="TO">Tocantins</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row-group">
+                        <div class="form-row">
+                            <label for="padrinho_cep"><?php _e( 'CEP *', 'movimento-livre' ); ?></label>
+                            <input type="text" id="padrinho_cep" name="padrinho_cep" maxlength="9" required>
+                        </div>
+                        
+                        <div class="form-row">
+                            <label for="padrinho_telefone"><?php _e( 'Telefone/WhatsApp *', 'movimento-livre' ); ?></label>
+                            <input type="text" id="padrinho_telefone" name="padrinho_telefone" required>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="form-info">

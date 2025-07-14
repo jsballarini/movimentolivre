@@ -535,3 +535,61 @@
         color: #ecf0f1;
     }
 } 
+/* ==================== FORMULÁRIO DE EMPRÉSTIMO - PADRINHO ==================== */
+.movliv-form .form-section {
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.movliv-form .form-section h4 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.movliv-form .form-description {
+    color: #666;
+    font-style: italic;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.movliv-form .form-row-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+@media (max-width: 768px) {
+    .movliv-form .form-row-group {
+        grid-template-columns: 1fr;
+    }
+}
+
+.movliv-form input[type="text"],
+.movliv-form select {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.movliv-form input[type="text"]:focus,
+.movliv-form select:focus {
+    border-color: #007cba;
+    outline: none;
+    box-shadow: 0 0 0 1px #007cba;
+}
+
+.movliv-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #333;
+}

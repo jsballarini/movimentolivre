@@ -1,0 +1,98 @@
+/* ==================== FORMULÁRIOS MOVIMENTO LIVRE ==================== */
+.movliv-form-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.movliv-form h3 {
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 24px;
+}
+
+.movliv-form .form-row {
+    margin-bottom: 15px;
+}
+
+.movliv-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: #333;
+}
+
+.movliv-form input[type="text"],
+.movliv-form input[type="email"],
+.movliv-form input[type="tel"],
+.movliv-form input[type="date"],
+.movliv-form select,
+.movliv-form textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.movliv-form input:focus,
+.movliv-form select:focus,
+.movliv-form textarea:focus {
+    border-color: #007cba;
+    outline: none;
+    box-shadow: 0 0 0 1px #007cba;
+}
+
+.movliv-form .form-info {
+    background: #f0f6fc;
+    border: 1px solid #c3e6fc;
+    border-radius: 4px;
+    padding: 15px;
+    margin: 20px 0;
+}
+
+.movliv-form .form-info h4 {
+    margin: 0 0 10px 0;
+    color: #0073aa;
+}
+
+.movliv-form .form-terms {
+    margin: 20px 0;
+    padding: 15px;
+    background: #fff3cd;
+    border: 1px solid #ffeaa7;
+    border-radius: 4px;
+}
+
+.movliv-form .form-submit {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.movliv-form .button-primary {
+    background: #007cba;
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.movliv-form .button-primary:hover {
+    background: #005a87;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .movliv-form-container {
+        margin: 10px;
+        padding: 15px;
+    }
+}

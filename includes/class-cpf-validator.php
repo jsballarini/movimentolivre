@@ -241,6 +241,53 @@ class MOVLIV_CPF_Validator {
         if ( ! empty( $cpf ) ) {
             echo '<p><strong>' . __( 'CPF do Solicitante:', 'movimento-livre' ) . '</strong> ' . esc_html( $this->format_cpf( $cpf ) ) . '</p>';
         }
+        
+        // Exibe dados do Padrinho se existirem
+        $this->display_padrinho_admin_order( $order );
+    }
+    
+    /**
+     * Exibe dados do Padrinho no admin do pedido
+     */
+    public function display_padrinho_admin_order( $order ) {
+        $padrinho_nome = get_post_meta( $order->get_id(), '_movliv_padrinho_nome', true );
+        
+        if ( ! empty( $padrinho_nome ) ) {
+            echo '<div style="margin-top: 15px; padding: 10px; background: #f0f0f1; border-radius: 3px;">';
+            echo '<h4 style="margin: 0 0 10px 0;">📋 Dados do Padrinho/Responsável</h4>';
+            
+            $padrinho_cpf = get_post_meta( $order->get_id(), '_movliv_padrinho_cpf', true );
+            $padrinho_endereco = get_post_meta( $order->get_id(), '_movliv_padrinho_endereco', true );
+            $padrinho_numero = get_post_meta( $order->get_id(), '_movliv_padrinho_numero', true );
+            $padrinho_complemento = get_post_meta( $order->get_id(), '_movliv_padrinho_complemento', true );
+            $padrinho_cidade = get_post_meta( $order->get_id(), '_movliv_padrinho_cidade', true );
+            $padrinho_estado = get_post_meta( $order->get_id(), '_movliv_padrinho_estado', true );
+            $padrinho_cep = get_post_meta( $order->get_id(), '_movliv_padrinho_cep', true );
+            $padrinho_telefone = get_post_meta( $order->get_id(), '_movliv_padrinho_telefone', true );
+            
+            echo '<p><strong>Nome:</strong> ' . esc_html( $padrinho_nome ) . '</p>';
+            
+            if ( $padrinho_cpf ) {
+                echo '<p><strong>CPF:</strong> ' . esc_html( $this->format_cpf( $padrinho_cpf ) ) . '</p>';
+            }
+            
+            if ( $padrinho_endereco ) {
+                $endereco_completo = $padrinho_endereco;
+                if ( $padrinho_numero ) $endereco_completo .= ', ' . $padrinho_numero;
+                if ( $padrinho_complemento ) $endereco_completo .= ', ' . $padrinho_complemento;
+                if ( $padrinho_cidade ) $endereco_completo .= ' - ' . $padrinho_cidade;
+                if ( $padrinho_estado ) $endereco_completo .= '/' . $padrinho_estado;
+                if ( $padrinho_cep ) $endereco_completo .= ' - CEP: ' . $padrinho_cep;
+                
+                echo '<p><strong>Endereço:</strong> ' . esc_html( $endereco_completo ) . '</p>';
+            }
+            
+            if ( $padrinho_telefone ) {
+                echo '<p><strong>Telefone:</strong> ' . esc_html( $padrinho_telefone ) . '</p>';
+            }
+            
+            echo '</div>';
+        }
     }
 
     /**
@@ -253,6 +300,7 @@ class MOVLIV_CPF_Validator {
             $new_columns[ $key ] = $column;
             if ( $key === 'order_status' ) {
                 $new_columns['cpf_solicitante'] = __( 'CPF Solicitante', 'movimento-livre' );
+                $new_columns['padrinho'] = __( 'Padrinho', 'movimento-livre' );
             }
         }
         
@@ -266,6 +314,11 @@ class MOVLIV_CPF_Validator {
         if ( $column === 'cpf_solicitante' ) {
             $cpf = get_post_meta( $order_id, '_cpf_solicitante', true );
             echo ! empty( $cpf ) ? esc_html( $this->format_cpf( $cpf ) ) : '-';
+        }
+        
+        if ( $column === 'padrinho' ) {
+            $padrinho_nome = get_post_meta( $order_id, '_movliv_padrinho_nome', true );
+            echo ! empty( $padrinho_nome ) ? esc_html( $padrinho_nome ) : '-';
         }
     }
 
