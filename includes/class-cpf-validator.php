@@ -58,8 +58,8 @@ class MOVLIV_CPF_Validator {
         // Hook adicional para salvar CPF (compatibilidade HPOS)
         add_action( 'woocommerce_checkout_create_order', array( $this, 'save_cpf_order_object' ), 10, 2 );
         
-        // Exibe CPF no admin do pedido
-        add_action( 'woocommerce_admin_order_data_after_billing_address', array( $this, 'display_cpf_admin_order' ) );
+        // ✅ CORREÇÃO: Hook removido para evitar conflito com class-order-hooks.php
+        // Os dados do CPF e Padrinho agora são exibidos em display_order_extra_fields()
         
         // Adiciona coluna CPF na lista de pedidos
         add_filter( 'manage_edit-shop_order_columns', array( $this, 'add_cpf_column_orders_list' ) );

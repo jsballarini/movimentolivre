@@ -62,8 +62,14 @@ class MOVLIV_Order_Hooks {
         add_action( 'woocommerce_new_order', array( $this, 'setup_new_order' ), 10, 1 );
         
         // ✅ CORREÇÃO: Hook mais específico para garantir status correto
-        add_action( 'woocommerce_checkout_order_processed', array( $this, 'force_loan_status' ), 999, 1 );
+        add_action( 'woocommerce_checkout_order_processed', array( $this, 'force_loan_status' ), 1, 1 );
         add_action( 'woocommerce_new_order', array( $this, 'after_order_created' ), 20, 1 );
+        
+        // ✅ NOVO: Hook para interceptar status logo após criação
+        add_action( 'woocommerce_checkout_order_created', array( $this, 'force_loan_status_immediate' ), 1, 1 );
+        
+        // ✅ NOVO: Hook para interceptar mudanças de status em tempo real
+        add_action( 'woocommerce_order_status_changed', array( $this, 'intercept_status_change' ), 5, 4 );
         
         // Modifica labels no admin
         add_filter( 'gettext', array( $this, 'change_woocommerce_labels' ), 20, 3 );
@@ -107,25 +113,74 @@ class MOVLIV_Order_Hooks {
             return;
         }
         
-        // Verifica se já está no status correto
-        if ( $order->get_status() === 'on-hold' ) {
-            error_log( "MovLiv: Pedido {$order_id} já está com status Aguardando" );
+        // ✅ CORREÇÃO: Verifica se já tem formulário enviado
+        $has_form = get_post_meta( $order_id, '_formulario_emprestimo_pdf', true ) || 
+                   get_post_meta( $order_id, '_form_emprestimo_pdf', true );
+        
+        if ( $has_form ) {
+            error_log( "MovLiv: Pedido {$order_id} já tem formulário enviado - permitindo status 'processing'" );
             return;
         }
         
-        // ✅ FORÇA status "Aguardando" para empréstimos
+        // ✅ CORREÇÃO: Força status "Aguardando" independente do status atual
+        $current_status = $order->get_status();
+        if ( $current_status !== 'on-hold' ) {
+            error_log( "MovLiv: FORÇANDO status do pedido {$order_id} de '{$current_status}' para 'on-hold'" );
+            
+            // Força status "Aguardando" para empréstimos
+            $order->update_status( 'on-hold', __( 'Empréstimo aguardando preenchimento do formulário de retirada.', 'movimento-livre' ) );
+            
+            // Marca como empréstimo do Movimento Livre
+            update_post_meta( $order_id, '_is_movimento_livre', 'yes' );
+            
+            // Adiciona nota automática
+            $order->add_order_note( 
+                __( 'Status FORÇADO para "Aguardando" - empréstimo deve aguardar formulário antes de ser processado.', 'movimento-livre' ),
+                false
+            );
+            
+            error_log( "MovLiv: Status do pedido {$order_id} FORÇADO para 'on-hold' (empréstimo gratuito)" );
+        } else {
+            error_log( "MovLiv: Pedido {$order_id} já está com status Aguardando" );
+        }
+    }
+
+    /**
+     * ✅ NOVO: Força status "Aguardando" imediatamente após criação do pedido
+     */
+    public function force_loan_status_immediate( $order ) {
+        error_log( "MovLiv: force_loan_status_immediate() chamado para pedido " . $order->get_id() );
+        
+        // Verifica se é um empréstimo (valor zero com produtos)
+        $is_loan = ( $order->get_total() == 0 );
+        $has_products = count( $order->get_items() ) > 0;
+        
+        if ( ! $is_loan || ! $has_products ) {
+            error_log( "MovLiv: Pedido " . $order->get_id() . " não é empréstimo - status não alterado" );
+            return;
+        }
+        
+        error_log( "MovLiv: FORÇANDO status IMEDIATO para 'on-hold' no pedido " . $order->get_id() );
+        
+        // Força status "Aguardando" imediatamente
         $order->update_status( 'on-hold', __( 'Empréstimo aguardando preenchimento do formulário de retirada.', 'movimento-livre' ) );
         
         // Marca como empréstimo do Movimento Livre
-        update_post_meta( $order_id, '_is_movimento_livre', 'yes' );
+        $order->update_meta_data( '_is_movimento_livre', 'yes' );
+        
+        // Define data prevista de devolução (30 dias)
+        $data_prevista = date( 'Y-m-d', strtotime( '+30 days' ) );
+        $order->update_meta_data( '_data_prevista_devolucao', $data_prevista );
         
         // Adiciona nota automática
         $order->add_order_note( 
-            __( 'Status corrigido para "Aguardando" - empréstimo deve aguardar formulário antes de ser processado.', 'movimento-livre' ),
+            __( 'Status IMEDIATAMENTE forçado para "Aguardando" - empréstimo deve aguardar formulário antes de ser processado.', 'movimento-livre' ),
             false
         );
         
-        error_log( "MovLiv: Status do pedido {$order_id} FORÇADO para 'Aguardando' (empréstimo gratuito)" );
+        $order->save();
+        
+        error_log( "MovLiv: Status IMEDIATO do pedido " . $order->get_id() . " forçado para 'on-hold' (empréstimo gratuito)" );
     }
 
     /**
@@ -182,14 +237,20 @@ class MOVLIV_Order_Hooks {
     }
 
     /**
-     * ✅ NOVO: Define status inicial correto para empréstimos no momento da criação
+     * ✅ CORREÇÃO: Define status inicial correto para empréstimos no momento da criação
      */
     public function set_initial_loan_status( $order ) {
+        error_log( "MovLiv: set_initial_loan_status() chamado para pedido " . $order->get_id() );
+        
         // Verifica se é um empréstimo (valor zero com produtos)
         $is_loan = ( $order->get_total() == 0 );
         $has_products = count( $order->get_items() ) > 0;
         
+        error_log( "MovLiv: Pedido " . $order->get_id() . " - is_loan: " . ($is_loan ? 'true' : 'false') . ", has_products: " . ($has_products ? 'true' : 'false') );
+        
         if ( $is_loan && $has_products ) {
+            error_log( "MovLiv: Definindo status inicial como 'on-hold' para empréstimo " . $order->get_id() );
+            
             // Define status inicial como "Aguardando"
             $order->update_status( 'on-hold', __( 'Empréstimo aguardando preenchimento do formulário de retirada.', 'movimento-livre' ) );
             
@@ -208,7 +269,9 @@ class MOVLIV_Order_Hooks {
             
             $order->save();
             
-            error_log( "MovLiv: Status inicial do pedido {$order->get_id()} definido como 'Aguardando' (empréstimo)" );
+            error_log( "MovLiv: Status inicial do pedido " . $order->get_id() . " definido como 'on-hold' (empréstimo)" );
+        } else {
+            error_log( "MovLiv: Pedido " . $order->get_id() . " não é empréstimo - status não alterado" );
         }
     }
 
@@ -363,8 +426,15 @@ class MOVLIV_Order_Hooks {
      * Metabox com formulários
      */
     public function formularios_metabox( $post ) {
+        // Suporta ambas as chaves salvas
         $emprestimo_pdf = get_post_meta( $post->ID, '_form_emprestimo_pdf', true );
+        if ( empty( $emprestimo_pdf ) ) {
+            $emprestimo_pdf = get_post_meta( $post->ID, '_formulario_emprestimo_pdf', true );
+        }
         $devolucao_pdf = get_post_meta( $post->ID, '_form_devolucao_pdf', true );
+        if ( empty( $devolucao_pdf ) ) {
+            $devolucao_pdf = get_post_meta( $post->ID, '_formulario_devolucao_pdf', true );
+        }
         
         ?>
         <div style="margin-bottom: 15px;">
@@ -432,9 +502,70 @@ class MOVLIV_Order_Hooks {
             echo '<div style="background: #e1f5fe; padding: 10px; margin: 10px 0; border-left: 4px solid #0277bd;">';
             echo '<strong>🦽 ' . __( 'Empréstimo do Movimento Livre', 'movimento-livre' ) . '</strong>';
             echo '</div>';
-        }
+            
+            // ✅ NOVO: Exibe CPF do Solicitante
+            $cpf_solicitante = get_post_meta( $order->get_id(), '_cpf_solicitante', true );
+            if ( ! empty( $cpf_solicitante ) ) {
+                echo '<div style="margin: 15px 0; padding: 10px; background: #f0f0f1; border-radius: 3px;">';
+                echo '<h4 style="margin: 0 0 10px 0;">👤 Dados do Solicitante</h4>';
+                echo '<p><strong>CPF:</strong> ' . esc_html( $this->format_cpf( $cpf_solicitante ) ) . '</p>';
+                echo '</div>';
+            }
+            
+            // Exibe dados do Padrinho/Responsável, se existirem
+            $padrinho_nome = get_post_meta( $order->get_id(), '_movliv_padrinho_nome', true );
+            
+            // ✅ DEBUG: Log para verificar dados
+            error_log( "MovLiv: Verificando dados do padrinho para pedido " . $order->get_id() . ":" );
+            error_log( "MovLiv: - _movliv_padrinho_nome: " . ( $padrinho_nome ?: 'VAZIO' ) );
+            error_log( "MovLiv: - _movliv_padrinho_cpf: " . ( get_post_meta( $order->get_id(), '_movliv_padrinho_cpf', true ) ?: 'VAZIO' ) );
+            
+            if ( ! empty( $padrinho_nome ) ) {
+                echo '<div style="margin: 15px 0; padding: 10px; background: #f0f0f1; border-radius: 3px;">';
+                echo '<h4 style="margin: 0 0 10px 0;">📋 Dados do Padrinho/Responsável</h4>';
+                
+                $p_fields = array(
+                    '_movliv_padrinho_nome' => __( 'Nome', 'movimento-livre' ),
+                    '_movliv_padrinho_cpf' => __( 'CPF', 'movimento-livre' ),
+                    '_movliv_padrinho_endereco' => __( 'Endereço', 'movimento-livre' ),
+                    '_movliv_padrinho_numero' => __( 'Número', 'movimento-livre' ),
+                    '_movliv_padrinho_complemento' => __( 'Complemento', 'movimento-livre' ),
+                    '_movliv_padrinho_cidade' => __( 'Cidade', 'movimento-livre' ),
+                    '_movliv_padrinho_estado' => __( 'Estado', 'movimento-livre' ),
+                    '_movliv_padrinho_cep' => __( 'CEP', 'movimento-livre' ),
+                    '_movliv_padrinho_telefone' => __( 'Telefone', 'movimento-livre' )
+                );
+                
+                foreach ( $p_fields as $key => $label ) {
+                    $val = get_post_meta( $order->get_id(), $key, true );
+                    if ( $val !== '' ) {
+                        echo '<p><strong>' . esc_html( $label ) . ':</strong> ' . esc_html( $val ) . '</p>';
+                    }
+                }
+                echo '</div>';
+            }
+                }
     }
-
+    
+    /**
+     * ✅ NOVO: Formata CPF para exibição
+     */
+    private function format_cpf( $cpf ) {
+        // Remove caracteres não numéricos
+        $cpf = preg_replace( '/[^0-9]/', '', $cpf );
+        
+        // Verifica se tem 11 dígitos
+        if ( strlen( $cpf ) != 11 ) {
+            return $cpf; // Retorna original se não for válido
+        }
+        
+        // Formata: 000.000.000-00
+        return substr( $cpf, 0, 3 ) . '.' . 
+               substr( $cpf, 3, 3 ) . '.' . 
+               substr( $cpf, 6, 3 ) . '-' . 
+               substr( $cpf, 9, 2 );
+    }
+    
     /**
      * Adiciona colunas na lista de pedidos
      */
@@ -547,7 +678,7 @@ class MOVLIV_Order_Hooks {
     }
 
     /**
-     * ✅ NOVO: Previne que WooCommerce defina automaticamente status "processing" para empréstimos
+     * ✅ CORREÇÃO: Previne processamento automático para empréstimos
      */
     public function prevent_auto_processing_for_loans( $status, $order_id, $order ) {
         // Verifica se é um empréstimo (valor zero com produtos)
@@ -555,11 +686,59 @@ class MOVLIV_Order_Hooks {
         $has_products = count( $order->get_items() ) > 0;
         
         if ( $is_loan && $has_products ) {
-            error_log( "MovLiv: Prevenindo auto-processing para empréstimo {$order_id} - mantendo status 'on-hold'" );
-            return 'on-hold'; // Força status "Aguardando"
+            // ✅ CORREÇÃO: Verifica se já tem formulário enviado
+            $has_form = get_post_meta( $order_id, '_formulario_emprestimo_pdf', true ) || 
+                       get_post_meta( $order_id, '_form_emprestimo_pdf', true );
+            
+            if ( ! $has_form ) {
+                error_log( "MovLiv: PREVENINDO auto-processing para empréstimo {$order_id} - mantendo status 'on-hold' (sem formulário)" );
+                return 'on-hold'; // Força status "Aguardando"
+            } else {
+                error_log( "MovLiv: Permitindo auto-processing para empréstimo {$order_id} - formulário já enviado" );
+                return $status; // Permite status original
+            }
         }
         
         return $status; // Mantém status original para outros tipos de pedido
+    }
+
+    /**
+     * ✅ NOVO: Intercepta mudanças de status em tempo real
+     */
+    public function intercept_status_change( $order_id, $old_status, $new_status, $order ) {
+        // Verifica se é um empréstimo (valor zero com produtos)
+        $is_loan = ( $order->get_total() == 0 );
+        $has_products = count( $order->get_items() ) > 0;
+        
+        if ( ! $is_loan || ! $has_products ) {
+            return; // Não é empréstimo
+        }
+        
+        error_log( "MovLiv: Interceptando mudança de status do pedido {$order_id}: {$old_status} -> {$new_status}" );
+        
+        // Se está tentando mudar para 'processing' sem formulário
+        if ( $new_status === 'processing' ) {
+            $has_form = get_post_meta( $order_id, '_formulario_emprestimo_pdf', true ) || 
+                       get_post_meta( $order_id, '_form_emprestimo_pdf', true );
+            
+            if ( ! $has_form ) {
+                error_log( "MovLiv: BLOQUEANDO mudança para 'processing' - pedido {$order_id} não tem formulário enviado" );
+                
+                // Força status de volta para 'on-hold'
+                $order->update_status( 'on-hold', __( 'Status bloqueado: empréstimo deve aguardar formulário antes de ser processado.', 'movimento-livre' ) );
+                
+                // Adiciona nota explicativa
+                $order->add_order_note( 
+                    __( 'Mudança para "Emprestado" bloqueada automaticamente - aguardando formulário de retirada.', 'movimento-livre' ),
+                    false
+                );
+                
+                // Previne a mudança de status
+                wp_die( __( 'Este empréstimo não pode ser marcado como "Emprestado" até que o formulário de retirada seja enviado.', 'movimento-livre' ) );
+            } else {
+                error_log( "MovLiv: Permitindo mudança para 'processing' - pedido {$order_id} tem formulário enviado" );
+            }
+        }
     }
 
     /**

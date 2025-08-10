@@ -394,7 +394,12 @@ class MOVLIV_Shortcodes {
                             <?php endif; ?>
                             
                             <div class="cadeira-action">
-                                <a href="<?php echo esc_url( $product->add_to_cart_url() ); ?>" class="button">
+                                <?php 
+                                // Redireciona direto para a página de checkout adicionando o produto ao carrinho
+                                $checkout_url = wc_get_checkout_url();
+                                $checkout_add_url = add_query_arg( 'add-to-cart', $product->get_id(), $checkout_url );
+                                ?>
+                                <a href="<?php echo esc_url( $checkout_add_url ); ?>" class="button">
                                     <?php _e( 'Solicitar Empréstimo', 'movimento-livre' ); ?>
                                 </a>
                             </div>
@@ -407,7 +412,7 @@ class MOVLIV_Shortcodes {
         <style>
         .cadeiras-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
             gap: 20px;
             margin-top: 20px;
         }

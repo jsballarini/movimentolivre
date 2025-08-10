@@ -275,7 +275,37 @@ class MOVLIV_Status_Manager {
 
         // Apenas para pedidos do plugin
         if ( ! $this->is_plugin_order( $order ) ) {
+            error_log( "MovLiv: Pedido {$order_id} não é do plugin - ignorando mudança de status" );
             return;
+        }
+
+        // ✅ CORREÇÃO: Verifica se é um empréstimo gratuito
+        $is_loan = ( $order->get_total() == 0 );
+        if ( $is_loan ) {
+            error_log( "MovLiv: Pedido {$order_id} é empréstimo gratuito - verificando permissão para mudança de status" );
+            
+            // Se está tentando mudar para 'processing' sem formulário
+            if ( $new_status === 'processing' ) {
+                $has_form = get_post_meta( $order_id, '_formulario_emprestimo_pdf', true ) || 
+                           get_post_meta( $order_id, '_form_emprestimo_pdf', true );
+                
+                if ( ! $has_form ) {
+                    error_log( "MovLiv: BLOQUEANDO mudança para 'processing' no Status Manager - pedido {$order_id} não tem formulário enviado" );
+                    
+                    // Força status de volta para 'on-hold'
+                    $order->update_status( 'on-hold', __( 'Status bloqueado pelo Status Manager: empréstimo deve aguardar formulário antes de ser processado.', 'movimento-livre' ) );
+                    
+                    // Adiciona nota explicativa
+                    $order->add_order_note( 
+                        __( 'Mudança para "Emprestado" bloqueada pelo Status Manager - aguardando formulário de retirada.', 'movimento-livre' ),
+                        false
+                    );
+                    
+                    return; // Previne execução das outras funções
+                } else {
+                    error_log( "MovLiv: Permitindo mudança para 'processing' no Status Manager - pedido {$order_id} tem formulário enviado" );
+                }
+            }
         }
 
         switch ( $new_status ) {
