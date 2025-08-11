@@ -84,7 +84,7 @@ Após a ativação:
 
 ## 🧪 6. Avaliação Interna (Colaborador)
 
-1. Usuário com role `movliv_avaliador` acessa menu *Avaliações Pendentes*
+1. Usuário com role `movliv_colaborador` ou `movliv_avaliador` acessa menu *Avaliações Pendentes*
 2. Preenche o formulário com avaliação técnica
 3. Resultado:
    - Aprovada → cadeira volta ao estoque e status = Pronta

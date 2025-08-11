@@ -64,7 +64,7 @@ Este documento descreve todos os shortcodes disponíveis no plugin **Movimento L
   - **Em Manutenção**, se reprovada
 - Se reprovada, gera novo formulário de avaliação
 
-**Restrito a:** usuários com role `movliv_avaliador` ou superior (não acessível para `movliv_colaborador`)
+**Restrito a:** usuários com role `movliv_colaborador` ou superior (acessível para colaboradores, avaliadores e administradores)
 
 **Exemplos de uso:**
 ```

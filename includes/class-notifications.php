@@ -218,10 +218,13 @@ class MOVLIV_Notifications {
      * Notifica avaliadores sobre produto devolvido
      */
     public function notify_avaliadores_produto_devolvido( $order ) {
-        $avaliadores = get_users( array( 'role' => 'movliv_avaliador' ) );
+        // Busca tanto colaboradores quanto avaliadores (ambos podem fazer avaliações)
+        $avaliadores = get_users( array( 
+            'role__in' => array( 'movliv_colaborador', 'movliv_avaliador' )
+        ) );
         
         if ( empty( $avaliadores ) ) {
-            // Se não há avaliadores, notifica admins
+            // Se não há colaboradores ou avaliadores, notifica admins
             $config = get_option( 'movliv_config', array() );
             $admin_email = $config['email_notificacoes'] ?? get_option( 'admin_email' );
             $avaliadores = array( (object) array( 'user_email' => $admin_email ) );
@@ -245,7 +248,7 @@ class MOVLIV_Notifications {
             $this->send_email( $avaliador->user_email, $subject, $message );
         }
         
-        error_log( "MovLiv: Notificação de avaliação enviada para " . count( $avaliadores ) . " avaliadores" );
+        error_log( "MovLiv: Notificação de avaliação enviada para " . count( $avaliadores ) . " colaboradores/avaliadores" );
     }
 
     /**

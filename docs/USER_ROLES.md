@@ -22,13 +22,12 @@ Colaborador do Instituto com acesso a recursos operacionais incluindo avaliaçã
 ## 🧪 2. movliv_avaliador
 
 ### Descrição:
-Usuário com permissão para realizar avaliações técnicas de cadeiras devolvidas.
+Usuário com permissão para realizar avaliações técnicas de cadeiras devolvidas (mantido para compatibilidade).
 
 ### Permissões:
-- Tudo que `movliv_colaborador` tem
-- Preencher formulários de avaliação técnica
-- Alterar status do produto (Pronta, Em Avaliação, Em Manutenção)
-- Visualizar histórico de avaliações por produto
+- **Mesmas permissões** que `movliv_colaborador`
+- Role mantido para compatibilidade com instalações existentes
+- **NOTA:** Não há diferença funcional entre Colaborador e Avaliador
 
 ---
 
@@ -64,8 +63,11 @@ Usuário que realiza o empréstimo da cadeira via frontend (pedido WooCommerce).
 ## 🔐 Controle de Acesso
 
 - Atribuições são feitas via `add_role()` e `add_cap()` na ativação do plugin
-- Os formulários protegidos por shortcodes respeitam os níveis de permissão automaticamente
-- As rotas de admin do plugin exigem verificação por `current_user_can()`
+- **Colaboradores** têm acesso completo a avaliações e devoluções
+- **Avaliadores** mantêm as mesmas permissões (compatibilidade)
+- **Administradores** têm acesso total ao sistema
+- Menu "Movimento Livre" aparece para `movliv_colaborador`, `movliv_avaliador` e `movliv_admin`
+- Avaliações são acessíveis por usuários com role `movliv_colaborador` ou superior
 
 ---
 

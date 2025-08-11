@@ -151,8 +151,8 @@ Para cada cadeira de rodas:
 
 Crie usuários com as roles específicas:
 
-- **Colaboradores**: `movliv_colaborador`
-- **Avaliadores**: `movliv_avaliador`
+- **Colaboradores**: `movliv_colaborador` (acesso completo a avaliações e devoluções)
+- **Avaliadores**: `movliv_avaliador` (mesmas permissões do Colaborador, mantido para compatibilidade)
 - **Administradores**: `administrator`
 
 ### 4. Configuração de Páginas

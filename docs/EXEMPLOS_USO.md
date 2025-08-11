@@ -98,7 +98,7 @@ Conteúdo: [movliv_form_avaliacao]
 URL: /avaliacoes-tecnicas
 Título: Avaliações Técnicas Pendentes
 Conteúdo: [movliv_form_avaliacao]
-Restrição: Apenas usuários com role movliv_avaliador ou superior
+Restrição: Apenas usuários com role movliv_colaborador ou superior
 ```
 
 ### **2. Página de Devolução**

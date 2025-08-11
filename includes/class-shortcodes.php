@@ -527,9 +527,9 @@ class MOVLIV_Shortcodes {
 
         $product_id = intval( $atts['produto_id'] );
         
-        // Verifica permissões - só usuários com role acima de Colaborador podem acessar
+        // Verifica permissões - usuários com role de Colaborador ou superior podem acessar
         if ( ! MOVLIV_Permissions::can_submit_evaluations() ) {
-            return '<p>' . __( 'Você não tem permissão para acessar esta página. Apenas usuários com role de Avaliador ou superior podem realizar avaliações técnicas.', 'movimento-livre' ) . '</p>';
+            return '<p>' . __( 'Você não tem permissão para acessar esta página. Apenas usuários com role de Colaborador ou superior podem realizar avaliações técnicas.', 'movimento-livre' ) . '</p>';
         }
 
         // Se não foi fornecido produto_id, mostra lista de cadeiras que precisam ser avaliadas

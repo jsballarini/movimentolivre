@@ -59,7 +59,7 @@
 - ✅ **Agora:** Funciona com ou sem `produto_id`
   - **Sem produto_id:** Lista todas as cadeiras que precisam de avaliação
   - **Com produto_id:** Formulário de avaliação para cadeira específica
-- ✅ **Segurança:** Apenas usuários com role `movliv_avaliador` ou superior
+- ✅ **Segurança:** Apenas usuários com role `movliv_colaborador` ou superior
 - ✅ **Interface:** Lista organizada por tipo (devolvidas vs. manutenção)
 - ✅ **UX:** Botões diretos para iniciar avaliação
 - ✅ **CORREÇÃO:** Redirecionamento corrigido - não vai mais para páginas administrativas
