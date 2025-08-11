@@ -5,6 +5,35 @@ Todas as mudanças notáveis deste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/),
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/spec/v2.0.0.html).
 
+## [0.0.3] - 2025-08-09
+
+### Changed
+- Unificação de versão para 0.0.3 no cabeçalho do plugin, constante `MOVLIV_VERSION`, `README.md` (badge e menção), `STATUS_DESENVOLVIMENTO.md` e `TODO.md`.
+
+### Documentation
+- Ajustes de datas e alinhamento de informações de versão.
+- Nenhuma mudança funcional de código nesta release.
+
+## [0.0.4] - 2025-08-09
+
+### 🔧 Correções
+
+- Notificações: mapeamento de status atualizado para usar valores nativos do WooCommerce (`on-hold`, `processing`, `completed`) em todos os pontos relevantes (disparo e assuntos de email).
+- CRON de vencimento: consulta de pedidos ajustada para status `processing` (empréstimos ativos).
+- Frontend: adicionado `assets/js/forms.js` para envio AJAX dos formulários (empréstimo, devolução, avaliação) com feedback de loading e mensagens.
+- Documentação: versões unificadas e badges atualizados para 0.0.4 em `README.md`, `STATUS_DESENVOLVIMENTO.md` e `TODO.md`.
+ - E-mail: envio do formulário de empréstimo (PDF) como anexo para cliente e cópia para o e-mail do admin configurado no plugin.
+
+### 🧩 Observações
+
+- Sem mudanças de schema de dados.
+- Próximos passos sugeridos: condicionar logs a `WP_DEBUG`, i18n de JS e segurança adicional no download de PDFs.
+
+## [0.0.3] - 2025-08-09
+
+### 🔧 Manutenções
+- Unificação de versão e documentação; ajustes de metadados e consistência entre arquivos. (Sem mudanças funcionais)
+
 ## [0.0.2] - 2025-07-15
 
 ### 🚀 NOVAS FUNCIONALIDADES

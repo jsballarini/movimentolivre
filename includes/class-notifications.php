@@ -57,16 +57,16 @@ class MOVLIV_Notifications {
      */
     public function handle_order_status_notifications( $order_id, $old_status, $new_status, $order ) {
         switch ( $new_status ) {
-            case 'aguardando':
+            case 'on-hold': // Aguardando
                 $this->send_solicitacao_recebida( $order );
                 $this->notify_admin_nova_solicitacao( $order );
                 break;
-                
-            case 'emprestado':
+
+            case 'processing': // Emprestado
                 $this->send_emprestimo_confirmado( $order );
                 break;
-                
-            case 'devolvido':
+
+            case 'completed': // Devolvido
                 $this->send_devolucao_confirmada( $order );
                 $this->notify_avaliadores_produto_devolvido( $order );
                 break;
@@ -106,7 +106,7 @@ class MOVLIV_Notifications {
             get_bloginfo( 'name' ),
             $order->get_order_number()
         );
-        
+
         $message = $this->get_email_template( 'emprestimo_confirmado', array(
             'order' => $order,
             'customer_name' => $order->get_billing_first_name(),
@@ -114,9 +114,32 @@ class MOVLIV_Notifications {
             'items' => $order->get_items(),
             'data_emprestimo' => $order->get_date_modified()->format( 'd/m/Y' )
         ) );
-        
-        $this->send_email( $to, $subject, $message );
-        
+
+        // Anexa o PDF do formulário de empréstimo, se existir
+        $pdf_path = get_post_meta( $order->get_id(), '_form_emprestimo_pdf', true );
+        if ( empty( $pdf_path ) ) {
+            $pdf_path = get_post_meta( $order->get_id(), '_formulario_emprestimo_pdf', true );
+        }
+        $attachments = array();
+        if ( $pdf_path && file_exists( $pdf_path ) ) {
+            $attachments[] = $pdf_path;
+        }
+
+        // Envia para o cliente
+        $this->send_email( $to, $subject, $message, array(), $attachments );
+
+        // Envia cópia para o admin configurado
+        $config = get_option( 'movliv_config', array() );
+        $admin_email = $config['email_notificacoes'] ?? get_option( 'admin_email' );
+        if ( $admin_email ) {
+            $admin_subject = sprintf( 
+                __( '[%s] (Cópia) Empréstimo Confirmado - Pedido #%s', 'movimento-livre' ),
+                get_bloginfo( 'name' ),
+                $order->get_order_number()
+            );
+            $this->send_email( $admin_email, $admin_subject, $message, array(), $attachments );
+        }
+
         error_log( "MovLiv: Email de empréstimo enviado para {$to}" );
     }
 
@@ -243,7 +266,8 @@ class MOVLIV_Notifications {
      */
     public function check_emprestimos_vencendo() {
         $orders = wc_get_orders( array(
-            'status' => 'emprestado',
+            // Usa status nativo do WooCommerce para empréstimos ativos
+            'status' => 'processing',
             'limit' => -1
         ) );
         
@@ -277,18 +301,25 @@ class MOVLIV_Notifications {
             return $subject;
         }
         
-        // Personaliza baseado no status
+        // Personaliza baseado no status nativo do WooCommerce
         switch ( $order->get_status() ) {
-            case 'aguardando':
+            case 'on-hold':
                 return sprintf( 
                     __( '[%s] Solicitação de Empréstimo Recebida - #%s', 'movimento-livre' ),
                     get_bloginfo( 'name' ),
                     $order->get_order_number()
                 );
                 
-            case 'emprestado':
+            case 'processing':
                 return sprintf( 
                     __( '[%s] Empréstimo Ativo - #%s', 'movimento-livre' ),
+                    get_bloginfo( 'name' ),
+                    $order->get_order_number()
+                );
+
+            case 'completed':
+                return sprintf( 
+                    __( '[%s] Devolução Confirmada - #%s', 'movimento-livre' ),
                     get_bloginfo( 'name' ),
                     $order->get_order_number()
                 );
@@ -402,15 +433,15 @@ class MOVLIV_Notifications {
     /**
      * Envia email com configurações apropriadas
      */
-    private function send_email( $to, $subject, $message, $headers = array() ) {
+    private function send_email( $to, $subject, $message, $headers = array(), $attachments = array() ) {
         $default_headers = array(
             'Content-Type: text/html; charset=UTF-8',
             'From: ' . get_bloginfo( 'name' ) . ' <' . get_option( 'admin_email' ) . '>'
         );
         
         $headers = array_merge( $default_headers, $headers );
-        
-        return wp_mail( $to, $subject, $message, $headers );
+
+        return wp_mail( $to, $subject, $message, $headers, $attachments );
     }
 
     /**

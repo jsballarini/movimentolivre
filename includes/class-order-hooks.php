@@ -363,8 +363,15 @@ class MOVLIV_Order_Hooks {
      * Metabox com formulários
      */
     public function formularios_metabox( $post ) {
+        // Suporta ambas as chaves salvas
         $emprestimo_pdf = get_post_meta( $post->ID, '_form_emprestimo_pdf', true );
+        if ( empty( $emprestimo_pdf ) ) {
+            $emprestimo_pdf = get_post_meta( $post->ID, '_formulario_emprestimo_pdf', true );
+        }
         $devolucao_pdf = get_post_meta( $post->ID, '_form_devolucao_pdf', true );
+        if ( empty( $devolucao_pdf ) ) {
+            $devolucao_pdf = get_post_meta( $post->ID, '_formulario_devolucao_pdf', true );
+        }
         
         ?>
         <div style="margin-bottom: 15px;">
@@ -432,6 +439,28 @@ class MOVLIV_Order_Hooks {
             echo '<div style="background: #e1f5fe; padding: 10px; margin: 10px 0; border-left: 4px solid #0277bd;">';
             echo '<strong>🦽 ' . __( 'Empréstimo do Movimento Livre', 'movimento-livre' ) . '</strong>';
             echo '</div>';
+            // Exibe dados do Padrinho/Responsável, se existirem
+            $p_fields = array(
+                '_movliv_padrinho_nome' => __( 'Padrinho - Nome', 'movimento-livre' ),
+                '_movliv_padrinho_cpf' => __( 'Padrinho - CPF', 'movimento-livre' ),
+                '_movliv_padrinho_endereco' => __( 'Padrinho - Endereço', 'movimento-livre' ),
+                '_movliv_padrinho_numero' => __( 'Padrinho - Número', 'movimento-livre' ),
+                '_movliv_padrinho_complemento' => __( 'Padrinho - Complemento', 'movimento-livre' ),
+                '_movliv_padrinho_cidade' => __( 'Padrinho - Cidade', 'movimento-livre' ),
+                '_movliv_padrinho_estado' => __( 'Padrinho - Estado', 'movimento-livre' ),
+                '_movliv_padrinho_cep' => __( 'Padrinho - CEP', 'movimento-livre' ),
+                '_movliv_padrinho_telefone' => __( 'Padrinho - Telefone', 'movimento-livre' )
+            );
+            echo '<table class="widefat striped" style="margin:10px 0;">';
+            echo '<tbody>';
+            foreach ( $p_fields as $key => $label ) {
+                $val = get_post_meta( $order->get_id(), $key, true );
+                if ( $val !== '' ) {
+                    echo '<tr><th style="width:220px;">' . esc_html( $label ) . ':</th><td>' . esc_html( $val ) . '</td></tr>';
+                }
+            }
+            echo '</tbody>';
+            echo '</table>';
         }
     }
 

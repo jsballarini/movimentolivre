@@ -197,8 +197,9 @@ class MOVLIV_Formularios {
             wp_send_json_error( 'Erro ao gerar documento PDF.' );
         }
 
-        // ✅ CORREÇÃO: Salva caminho do PDF no pedido
+        // ✅ CORREÇÃO: Salva caminho do PDF no pedido (ambas as chaves para compatibilidade)
         update_post_meta( $order_id, '_formulario_emprestimo_pdf', $pdf_path );
+        update_post_meta( $order_id, '_form_emprestimo_pdf', $pdf_path );
 
         // ✅ NOVO: Atualiza status do pedido para "Processando" (Emprestado)
         $order->update_status( 'processing', __( 'Formulário de empréstimo recebido. Cadeira emprestada.', 'movimento-livre' ) );
@@ -274,8 +275,9 @@ class MOVLIV_Formularios {
             wp_send_json_error( 'Erro ao gerar documento PDF.' );
         }
 
-        // ✅ CORREÇÃO: Salva caminho do PDF no pedido
+        // ✅ CORREÇÃO: Salva caminho do PDF no pedido (ambas as chaves para compatibilidade)
         update_post_meta( $order_id, '_formulario_devolucao_pdf', $pdf_path );
+        update_post_meta( $order_id, '_form_devolucao_pdf', $pdf_path );
 
         // Atualiza status do pedido para "Devolvido" (status nativo completed)
         $order->update_status( 'completed', __( 'Formulário de devolução recebido. Cadeira devolvida para avaliação.', 'movimento-livre' ) );
@@ -580,17 +582,16 @@ class MOVLIV_Formularios {
      * Obtém URL da página de sucesso
      */
     private function get_success_page_url( $form_type ) {
-        $pages = array(
-            'emprestimo' => 'meus-emprestimos',
-            'devolucao' => 'meus-emprestimos',
-            'avaliacao' => admin_url( 'edit.php?post_type=product' )
-        );
-        
-        if ( isset( $pages[ $form_type ] ) ) {
-            return home_url( '/' . $pages[ $form_type ] );
+        // Para empréstimo e devolução, direciona para Minha Conta > Pedidos
+        if ( in_array( $form_type, array( 'emprestimo', 'devolucao' ), true ) ) {
+            if ( function_exists( 'wc_get_endpoint_url' ) && function_exists( 'wc_get_page_permalink' ) ) {
+                return wc_get_endpoint_url( 'orders', '', wc_get_page_permalink( 'myaccount' ) );
+            }
+            // Fallback solicitado
+            return home_url( '/minha-conta/orders/' );
         }
-        
-        return home_url();
+        // Avaliação permanece na área administrativa
+        return admin_url( 'admin.php?page=movimento-livre-cadeiras' );
     }
 
     /**
