@@ -97,24 +97,423 @@ class MOVLIV_Shortcodes {
         return $formularios->get_emprestimo_form_html( $order_id );
     }
 
-    /**
-     * Shortcode para formulário de devolução
-     * [movliv_form_devolucao pedido_id="123"]
-     */
     public function shortcode_form_devolucao( $atts ) {
         $atts = shortcode_atts( array(
-            'pedido_id' => 0
+            'pedido_id' => 0,
         ), $atts, 'movliv_form_devolucao' );
-
-        $order_id = intval( $atts['pedido_id'] );
-        
+    
+        $order_id = function_exists( 'absint' ) ? absint( $atts['pedido_id'] ) : intval( $atts['pedido_id'] );
+    
+        // 1) Tenta pelos endpoints padrão do WooCommerce
         if ( ! $order_id ) {
-            return '<p>' . __( 'ID do pedido é obrigatório.', 'movimento-livre' ) . '</p>';
+            foreach ( array( 'view-order', 'order-pay', 'order-received' ) as $ep ) {
+                $maybe = function_exists( 'absint' ) ? absint( get_query_var( $ep ) ) : intval( get_query_var( $ep ) );
+                if ( $maybe ) { $order_id = $maybe; break; }
+            }
         }
-
+    
+        // 2) Tenta pela order key (?key=wc_order_...)
+        $resolved_by_key = false;
+        if ( ! $order_id && isset( $_GET['key'] ) ) {
+            $key = function_exists( 'wc_clean' ) ? wc_clean( function_exists( 'wp_unslash' ) ? wp_unslash( $_GET['key'] ) : stripslashes( $_GET['key'] ) ) : sanitize_text_field( function_exists( 'wp_unslash' ) ? wp_unslash( $_GET['key'] ) : stripslashes( $_GET['key'] ) );
+            $maybe = function_exists( 'wc_get_order_id_by_order_key' ) ? wc_get_order_id_by_order_key( $key ) : $this->get_order_id_by_key_fallback( $key );
+            if ( $maybe ) {
+                $order_id = function_exists( 'absint' ) ? absint( $maybe ) : intval( $maybe );
+                $resolved_by_key = true;
+            }
+        }
+    
+        // 3) Parâmetros de conveniência (?pedido=123, ?order_id=123, ?order=123)
+        if ( ! $order_id ) {
+            foreach ( array( 'pedido', 'order_id', 'order' ) as $param ) {
+                if ( isset( $_GET[ $param ] ) ) {
+                    $order_id = function_exists( 'absint' ) ? absint( $_GET[ $param ] ) : intval( $_GET[ $param ] );
+                    if ( $order_id ) break;
+                }
+            }
+        }
+    
+        // (Opcional) 4) Suporte a número sequencial, se você usar plugin específico
+        // Ex.: ?order_number=2025-000123 (ajuste a integração conforme o plugin que você usa)
+        /*
+        if ( ! $order_id && isset( $_GET['order_number'] ) && function_exists( 'wc_sequential_order_numbers' ) ) {
+            $seq = wc_clean( wp_unslash( $_GET['order_number'] ) );
+            $maybe = wc_sequential_order_numbers()->find_order_by_order_number( $seq );
+            if ( $maybe ) $order_id = absint( $maybe );
+        }
+        */
+    
+        if ( ! $order_id ) {
+            return $this->get_cadeiras_emprestadas_list();
+        }
+    
+        $order = function_exists( 'wc_get_order' ) ? wc_get_order( $order_id ) : null;
+        if ( ! $order ) {
+            return $this->get_cadeiras_emprestadas_list();
+        }
+    
+        // Segurança: só o dono do pedido (ou admin). Se veio por "key", valida a key.
+        if ( ! current_user_can( 'manage_woocommerce' ) ) {
+            if ( $resolved_by_key ) {
+                $provided_key = isset( $key ) ? $key : ( function_exists( 'wc_clean' ) ? wc_clean( function_exists( 'wp_unslash' ) ? wp_unslash( $_GET['key'] ?? '' ) : stripslashes( $_GET['key'] ?? '' ) ) : sanitize_text_field( function_exists( 'wp_unslash' ) ? wp_unslash( $_GET['key'] ?? '' ) : stripslashes( $_GET['key'] ?? '' ) ) );
+                if ( $order->get_order_key() !== $provided_key ) {
+                    return '<p>' . ( function_exists( 'esc_html__' ) ? esc_html__( 'Chave do pedido inválida.', 'movimento-livre' ) : __( 'Chave do pedido inválida.', 'movimento-livre' ) ) . '</p>';
+                }
+            } else {
+                $user_id = get_current_user_id();
+                if ( ! $user_id ) {
+                    return '<p>' . ( function_exists( 'esc_html__' ) ? esc_html__( 'Faça login para acessar este pedido.', 'movimento-livre' ) : __( 'Faça login para acessar este pedido.', 'movimento-livre' ) ) . '</p>';
+                }
+                if ( (int) $order->get_user_id() !== (int) $user_id ) {
+                    return '<p>' . ( function_exists( 'esc_html__' ) ? esc_html__( 'Este pedido não pertence à sua conta.', 'movimento-livre' ) : __( 'Este pedido não pertence à sua conta.', 'movimento-livre' ) ) . '</p>';
+                }
+            }
+        }
+    
         $formularios = MOVLIV_Formularios::getInstance();
         return $formularios->get_devolucao_form_html( $order_id );
     }
+
+    /**
+     * Lista cadeiras emprestadas do usuário atual
+     */
+    private function get_cadeiras_emprestadas_list() {
+        $user_id = get_current_user_id();
+        
+        if ( ! $user_id ) {
+            return '<div class="movliv-error">' . 
+                '<p>' . ( function_exists( 'esc_html__' ) ? esc_html__( 'Faça login para visualizar suas cadeiras emprestadas.', 'movimento-livre' ) : __( 'Faça login para visualizar suas cadeiras emprestadas.', 'movimento-livre' ) ) . '</p>' .
+                '<p><a href="' . esc_url( get_permalink( function_exists( 'wc_get_page_id' ) ? wc_get_page_id( 'myaccount' ) : get_option( 'woocommerce_myaccount_page_id' ) ) ) . '" class="button">' . 
+                ( function_exists( 'esc_html__' ) ? esc_html__( 'Fazer Login', 'movimento-livre' ) : __( 'Fazer Login', 'movimento-livre' ) ) . '</a></p>' .
+                '</div>';
+        }
+
+        // Verifica se é um administrador
+        $is_admin = current_user_can( 'manage_woocommerce' ) || current_user_can( 'administrator' );
+        
+        // Busca pedidos emprestados
+        $args = array(
+            'status' => array( 'processing' ), // Status "Emprestado"
+            'limit' => -1,
+            'orderby' => 'date',
+            'order' => 'DESC'
+        );
+        
+        // Se não for admin, busca apenas pedidos do usuário atual
+        if ( ! $is_admin ) {
+            $args['customer_id'] = $user_id;
+        }
+
+        // Verifica se a função wc_get_orders está disponível (WooCommerce 3.0+)
+        if ( function_exists( 'wc_get_orders' ) ) {
+            $orders = wc_get_orders( $args );
+        } else {
+            // Fallback para versões antigas do WooCommerce
+            $orders = $this->get_orders_fallback( $user_id );
+        }
+        
+        if ( empty( $orders ) ) {
+            if ( $is_admin ) {
+                return '<div class="movliv-info">' . 
+                    '<p>' . ( function_exists( 'esc_html__' ) ? esc_html__( 'Não há cadeiras emprestadas no momento.', 'movimento-livre' ) : __( 'Não há cadeiras emprestadas no momento.', 'movimento-livre' ) ) . '</p>' .
+                    '<p><a href="' . esc_url( admin_url( 'edit.php?post_type=shop_order' ) ) . '" class="button">' . 
+                    ( function_exists( 'esc_html__' ) ? esc_html__( 'Ver Todos os Pedidos', 'movimento-livre' ) : __( 'Ver Todos os Pedidos', 'movimento-livre' ) ) . '</a></p>' .
+                    '</div>';
+            } else {
+                return '<div class="movliv-info">' . 
+                    '<p>' . ( function_exists( 'esc_html__' ) ? esc_html__( 'Você não possui cadeiras emprestadas no momento.', 'movimento-livre' ) : __( 'Você não possui cadeiras emprestadas no momento.', 'movimento-livre' ) ) . '</p>' .
+                    '<p><a href="' . esc_url( get_permalink( function_exists( 'wc_get_page_id' ) ? wc_get_page_id( 'shop' ) : get_option( 'woocommerce_shop_page_id' ) ) ) . '" class="button">' . 
+                    ( function_exists( 'esc_html__' ) ? esc_html__( 'Solicitar Cadeira', 'movimento-livre' ) : __( 'Solicitar Cadeira', 'movimento-livre' ) ) . '</a></p>' .
+                    '</div>';
+            }
+        }
+
+        ob_start();
+        ?>
+        <div class="movliv-cadeiras-emprestadas">
+            <h3><?php 
+                if ( $is_admin ) {
+                    ( function_exists( 'esc_html_e' ) ? esc_html_e( 'Todas as Cadeiras Emprestadas', 'movimento-livre' ) : _e( 'Todas as Cadeiras Emprestadas', 'movimento-livre' ) );
+                } else {
+                    ( function_exists( 'esc_html_e' ) ? esc_html_e( 'Suas Cadeiras Emprestadas', 'movimento-livre' ) : _e( 'Suas Cadeiras Emprestadas', 'movimento-livre' ) );
+                }
+            ?></h3>
+            <p><?php 
+                if ( $is_admin ) {
+                    ( function_exists( 'esc_html_e' ) ? esc_html_e( 'Selecione uma cadeira para processar devolução:', 'movimento-livre' ) : _e( 'Selecione uma cadeira para processar devolução:', 'movimento-livre' ) );
+                } else {
+                    ( function_exists( 'esc_html_e' ) ? esc_html_e( 'Selecione uma cadeira para devolver:', 'movimento-livre' ) : _e( 'Selecione uma cadeira para devolver:', 'movimento-livre' ) );
+                }
+            ?></p>
+            
+            <div class="movliv-cadeiras-grid">
+                <?php foreach ( $orders as $order ) : ?>
+                    <?php 
+                    $data_emprestimo = $order->get_date_created();
+                    $data_prevista = get_post_meta( $order->get_id(), '_data_prevista_devolucao', true );
+                    $items = $order->get_items();
+                    ?>
+                    
+                    <?php foreach ( $items as $item ) : ?>
+                        <?php 
+                        $product = function_exists( 'wc_get_product' ) ? $item->get_product() : null;
+                        if ( ! $product ) continue;
+                        ?>
+                        
+                        <div class="movliv-cadeira-item">
+                            <div class="cadeira-info">
+                                <h4><?php echo esc_html( $product->get_name() ); ?></h4>
+                                <p class="cadeira-tag">
+                                    <strong><?php ( function_exists( 'esc_html_e' ) ? esc_html_e( 'TAG:', 'movimento-livre' ) : _e( 'TAG:', 'movimento-livre' ) ); ?></strong> 
+                                    <?php echo esc_html( $product->get_sku() ); ?>
+                                </p>
+                                <p class="pedido-info">
+                                    <strong><?php ( function_exists( 'esc_html_e' ) ? esc_html_e( 'Pedido:', 'movimento-livre' ) : _e( 'Pedido:', 'movimento-livre' ) ); ?></strong> 
+                                    #<?php echo esc_html( $order->get_order_number() ); ?>
+                                </p>
+                                <?php if ( $is_admin ) : ?>
+                                <p class="cliente-info">
+                                    <strong><?php ( function_exists( 'esc_html_e' ) ? esc_html_e( 'Cliente:', 'movimento-livre' ) : _e( 'Cliente:', 'movimento-livre' ) ); ?></strong> 
+                                    <?php echo esc_html( $order->get_billing_first_name() . ' ' . $order->get_billing_last_name() ); ?>
+                                    (<?php echo esc_html( $order->get_billing_email() ); ?>)
+                                </p>
+                                <?php endif; ?>
+                                <p class="data-emprestimo">
+                                    <strong><?php ( function_exists( 'esc_html_e' ) ? esc_html_e( 'Data do Empréstimo:', 'movimento-livre' ) : _e( 'Data do Empréstimo:', 'movimento-livre' ) ); ?></strong> 
+                                    <?php echo esc_html( $data_emprestimo ? ( function_exists( 'date_i18n' ) ? $data_emprestimo->date_i18n( 'd/m/Y' ) : $data_emprestimo->format( 'd/m/Y' ) ) : 'N/A' ); ?>
+                                </p>
+                                <?php if ( $data_prevista ) : ?>
+                                    <p class="data-prevista">
+                                        <strong><?php ( function_exists( 'esc_html_e' ) ? esc_html_e( 'Data Prevista Devolução:', 'movimento-livre' ) : _e( 'Data Prevista Devolução:', 'movimento-livre' ) ); ?></strong> 
+                                        <?php echo esc_html( function_exists( 'date_i18n' ) ? date_i18n( 'd/m/Y', strtotime( $data_prevista ) ) : date( 'd/m/Y', strtotime( $data_prevista ) ) ); ?>
+                                    </p>
+                                <?php endif; ?>
+                            </div>
+                            
+                            <div class="cadeira-actions">
+                                <a href="?pedido=<?php echo esc_attr( $order->get_id() ); ?>" 
+                                   class="button button-primary">
+                                    <?php 
+                                        if ( $is_admin ) {
+                                            ( function_exists( 'esc_html_e' ) ? esc_html_e( 'Processar Devolução', 'movimento-livre' ) : _e( 'Processar Devolução', 'movimento-livre' ) );
+                                        } else {
+                                            ( function_exists( 'esc_html_e' ) ? esc_html_e( 'Devolver Cadeira', 'movimento-livre' ) : _e( 'Devolver Cadeira', 'movimento-livre' ) );
+                                        }
+                                    ?>
+                                </a>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endforeach; ?>
+            </div>
+            
+            <div class="movliv-info-extra">
+                <p><strong><?php 
+                    if ( $is_admin ) {
+                        ( function_exists( 'esc_html_e' ) ? esc_html_e( 'Como processar devolução:', 'movimento-livre' ) : _e( 'Como processar devolução:', 'movimento-livre' ) );
+                    } else {
+                        ( function_exists( 'esc_html_e' ) ? esc_html_e( 'Como devolver:', 'movimento-livre' ) : _e( 'Como devolver:', 'movimento-livre' ) );
+                    }
+                ?></strong></p>
+                <ol>
+                    <?php if ( $is_admin ) : ?>
+                        <li><?php ( function_exists( 'esc_html_e' ) ? esc_html_e( 'Clique em "Processar Devolução" na cadeira desejada', 'movimento-livre' ) : _e( 'Clique em "Processar Devolução" na cadeira desejada', 'movimento-livre' ) ); ?></li>
+                        <li><?php ( function_exists( 'esc_html_e' ) ? esc_html_e( 'Preencha o formulário de devolução em nome do cliente', 'movimento-livre' ) : _e( 'Preencha o formulário de devolução em nome do cliente', 'movimento-livre' ) ); ?></li>
+                        <li><?php ( function_exists( 'esc_html_e' ) ? esc_html_e( 'Aguarde a avaliação técnica', 'movimento-livre' ) : _e( 'Aguarde a avaliação técnica', 'movimento-livre' ) ); ?></li>
+                    <?php else : ?>
+                        <li><?php ( function_exists( 'esc_html_e' ) ? esc_html_e( 'Clique em "Devolver Cadeira" na cadeira desejada', 'movimento-livre' ) : _e( 'Clique em "Devolver Cadeira" na cadeira desejada', 'movimento-livre' ) ); ?></li>
+                        <li><?php ( function_exists( 'esc_html_e' ) ? esc_html_e( 'Preencha o formulário de devolução', 'movimento-livre' ) : _e( 'Preencha o formulário de devolução', 'movimento-livre' ) ); ?></li>
+                        <li><?php ( function_exists( 'esc_html_e' ) ? esc_html_e( 'Aguarde a avaliação técnica', 'movimento-livre' ) : _e( 'Aguarde a avaliação técnica', 'movimento-livre' ) ); ?></li>
+                    <?php endif; ?>
+                </ol>
+            </div>
+        </div>
+        
+        <style>
+        .movliv-cadeiras-emprestadas {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .movliv-cadeiras-emprestadas h3 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .movliv-cadeiras-grid {
+            display: grid;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .movliv-cadeira-item {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            background: #f9f9f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .cadeira-info h4 {
+            margin: 0 0 10px 0;
+            color: #2c5aa0;
+        }
+        
+        .cadeira-info p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+        
+        .cadeira-tag {
+            background: #e7f3ff;
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        
+        .cliente-info {
+            background: #fff3cd;
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: inline-block;
+            border-left: 3px solid #ffc107;
+        }
+        
+        .cadeira-actions .button {
+            background: #2c5aa0;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .cadeira-actions .button:hover {
+            background: #1e3f6b;
+            color: white;
+        }
+        
+        .movliv-info-extra {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #2c5aa0;
+        }
+        
+        .movliv-info-extra ol {
+            margin: 10px 0 0 20px;
+        }
+        
+        .movliv-info-extra li {
+            margin-bottom: 8px;
+        }
+        
+        .movliv-error, .movliv-info {
+            text-align: center;
+            padding: 30px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        
+        .movliv-error {
+            border-color: #dc3232;
+            background: #fef7f7;
+        }
+        
+        .movliv-info {
+            border-color: #46b450;
+            background: #f7fef7;
+        }
+        
+        @media (max-width: 768px) {
+            .movliv-cadeira-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .cadeira-actions {
+                width: 100%;
+            }
+            
+            .cadeira-actions .button {
+                width: 100%;
+                text-align: center;
+            }
+        }
+        </style>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Fallback para buscar pedidos em versões antigas do WooCommerce
+     */
+    private function get_orders_fallback( $user_id ) {
+        global $wpdb;
+        
+        $orders = array();
+        
+        // Verifica se é um administrador
+        $is_admin = current_user_can( 'manage_woocommerce' ) || current_user_can( 'administrator' );
+        
+        if ( $is_admin ) {
+            // Para administradores, busca todos os pedidos com status 'processing'
+            $query = "
+                SELECT p.ID, p.post_date, p.post_status
+                FROM {$wpdb->posts} p
+                WHERE p.post_type = 'shop_order'
+                AND p.post_status = 'wc-processing'
+                ORDER BY p.post_date DESC
+            ";
+        } else {
+            // Para usuários comuns, busca apenas pedidos do usuário
+            $query = $wpdb->prepare( "
+                SELECT p.ID, p.post_date, p.post_status
+                FROM {$wpdb->posts} p
+                WHERE p.post_type = 'shop_order'
+                AND p.post_status = 'wc-processing'
+                AND p.post_author = %d
+                ORDER BY p.post_date DESC
+            ", $user_id );
+        }
+        
+        $order_ids = $wpdb->get_col( $query );
+        
+        foreach ( $order_ids as $order_id ) {
+            $order = function_exists( 'wc_get_order' ) ? wc_get_order( $order_id ) : null;
+            if ( $order ) {
+                $orders[] = $order;
+            }
+        }
+        
+        return $orders;
+    }
+
+    /**
+     * Fallback para buscar ID do pedido pela chave em versões antigas do WooCommerce
+     */
+    private function get_order_id_by_key_fallback( $order_key ) {
+        global $wpdb;
+        
+        $query = $wpdb->prepare( "
+            SELECT post_id
+            FROM {$wpdb->postmeta}
+            WHERE meta_key = '_order_key'
+            AND meta_value = %s
+            LIMIT 1
+        ", $order_key );
+        
+        return $wpdb->get_var( $query );
+    }
+    
 
     /**
      * Shortcode para formulário de avaliação
@@ -160,7 +559,7 @@ class MOVLIV_Shortcodes {
             return '<p>' . __( 'Você não tem permissão para acessar esta informação.', 'movimento-livre' ) . '</p>';
         }
 
-        $product = wc_get_product( $product_id );
+        $product = function_exists( 'wc_get_product' ) ? wc_get_product( $product_id ) : null;
         if ( ! $product ) {
             return '<p>' . __( 'Produto não encontrado.', 'movimento-livre' ) . '</p>';
         }
@@ -289,7 +688,7 @@ class MOVLIV_Shortcodes {
                             <td>
                                 <?php 
                                 foreach ( $order->get_items() as $item ) {
-                                    $product = $item->get_product();
+                                    $product = function_exists( 'wc_get_product' ) ? $item->get_product() : null;
                                     if ( $product ) {
                                         echo esc_html( $product->get_sku() );
                                         break;
