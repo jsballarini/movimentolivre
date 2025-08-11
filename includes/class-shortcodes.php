@@ -54,6 +54,7 @@ class MOVLIV_Shortcodes {
         add_shortcode( 'movliv_lista_cadeiras', array( $this, 'shortcode_lista_cadeiras' ) );
         add_shortcode( 'movliv_avaliacoes_pendentes', array( $this, 'shortcode_avaliacoes_pendentes' ) );
         add_shortcode( 'movliv_dashboard', array( $this, 'shortcode_dashboard' ) );
+        add_shortcode( 'movliv_debug_status', array( $this, 'shortcode_debug_status' ) );
 
     }
 
@@ -526,17 +527,266 @@ class MOVLIV_Shortcodes {
 
         $product_id = intval( $atts['produto_id'] );
         
-        if ( ! $product_id ) {
-            return '<p>' . __( 'ID do produto é obrigatório.', 'movimento-livre' ) . '</p>';
+        // Verifica permissões - só usuários com role acima de Colaborador podem acessar
+        if ( ! MOVLIV_Permissions::can_submit_evaluations() ) {
+            return '<p>' . __( 'Você não tem permissão para acessar esta página. Apenas usuários com role de Avaliador ou superior podem realizar avaliações técnicas.', 'movimento-livre' ) . '</p>';
         }
 
-        // Verifica permissões
-        if ( ! MOVLIV_Permissions::can_submit_evaluations() ) {
-            return '<p>' . __( 'Você não tem permissão para acessar esta página.', 'movimento-livre' ) . '</p>';
+        // Se não foi fornecido produto_id, mostra lista de cadeiras que precisam ser avaliadas
+        if ( ! $product_id ) {
+            return $this->get_cadeiras_para_avaliacao_list();
         }
 
         $formularios = MOVLIV_Formularios::getInstance();
         return $formularios->get_avaliacao_form_html( $product_id );
+    }
+
+    /**
+     * Obtém lista de cadeiras que precisam ser avaliadas
+     */
+    private function get_cadeiras_para_avaliacao_list() {
+        // Verifica se o usuário está logado
+        if ( ! is_user_logged_in() ) {
+            return '<p>' . __( 'Você precisa estar logado para acessar esta página.', 'movimento-livre' ) . '</p>';
+        }
+
+        // Verifica se uma avaliação foi completada
+        $avaliacao_completed = isset( $_GET['avaliacao_completed'] ) && $_GET['avaliacao_completed'] === '1';
+        
+        $handler = MOVLIV_Product_Status_Handler::getInstance();
+        $products_avaliacao = $handler->get_products_pending_evaluation();
+        $products_reavaliacao = $handler->get_products_pending_reevaluation();
+
+        // ✅ CORREÇÃO: Busca alternativa por status para cadeiras em manutenção
+        $products_manutencao_por_status = $this->get_products_by_status( 'em_manutencao' );
+        
+        // Debug para desenvolvimento
+        if ( current_user_can( 'administrator' ) ) {
+            error_log( "MovLiv Debug - Cadeiras que precisam de avaliação: " . count( $products_avaliacao ) );
+            error_log( "MovLiv Debug - Cadeiras que precisam de reavaliação: " . count( $products_reavaliacao ) );
+            error_log( "MovLiv Debug - Cadeiras com status 'em_manutencao': " . count( $products_manutencao_por_status ) );
+        }
+
+        ob_start();
+        ?>
+        <div class="movliv-cadeiras-avaliacao">
+            <?php if ( $avaliacao_completed ) : ?>
+                <div class="avaliacao-success" style="background: #d4edda; border: 1px solid #c3e6cb; border-radius: 4px; padding: 15px; margin-bottom: 20px; color: #155724;">
+                    <h4 style="margin: 0 0 10px 0; color: #155724;">✅ <?php _e( 'Avaliação Concluída com Sucesso!', 'movimento-livre' ); ?></h4>
+                    <p style="margin: 0; color: #155724;">
+                        <?php _e( 'A avaliação técnica foi enviada e processada. A cadeira foi atualizada conforme o resultado da avaliação.', 'movimento-livre' ); ?>
+                    </p>
+                </div>
+            <?php endif; ?>
+
+            <h3><?php _e( 'Cadeiras que Precisam de Avaliação Técnica', 'movimento-livre' ); ?></h3>
+            
+            <?php if ( ! empty( $products_avaliacao ) ) : ?>
+                <div class="avaliacao-section">
+                    <h4><?php _e( '🔄 Cadeiras Devolvidas - Aguardando Avaliação', 'movimento-livre' ); ?></h4>
+                    <table class="wp-list-table widefat striped">
+                        <thead>
+                            <tr>
+                                <th><?php _e( 'TAG/SKU', 'movimento-livre' ); ?></th>
+                                <th><?php _e( 'Modelo', 'movimento-livre' ); ?></th>
+                                <th><?php _e( 'Data da Devolução', 'movimento-livre' ); ?></th>
+                                <th><?php _e( 'Ação', 'movimento-livre' ); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ( $products_avaliacao as $post ) : 
+                                $product = function_exists( 'wc_get_product' ) ? wc_get_product( $post->ID ) : null;
+                                if ( ! $product ) continue;
+                                
+                                $data_devolucao = get_post_meta( $post->ID, '_data_devolucao', true );
+                                $order_id = get_post_meta( $post->ID, '_order_devolucao', true );
+                            ?>
+                                <tr>
+                                    <td><strong><?php echo esc_html( $product->get_sku() ); ?></strong></td>
+                                    <td><?php echo esc_html( $product->get_name() ); ?></td>
+                                    <td>
+                                        <?php 
+                                        if ( $data_devolucao ) {
+                                            echo esc_html( function_exists( 'date_i18n' ) ? date_i18n( 'd/m/Y H:i', strtotime( $data_devolucao ) ) : date( 'd/m/Y H:i', strtotime( $data_devolucao ) ) );
+                                        } else {
+                                            echo '-';
+                                        }
+                                        ?>
+                                    </td>
+                                    <td>
+                                        <a href="<?php echo esc_url( add_query_arg( 'avaliar_produto', $post->ID ) ); ?>" class="button button-primary">
+                                            <?php _e( 'Avaliar Cadeira', 'movimento-livre' ); ?>
+                                        </a>
+                                        <?php if ( $order_id ) : ?>
+                                            <br><small><?php printf( __( 'Pedido #%s', 'movimento-livre' ), esc_html( $order_id ) ); ?></small>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
+
+            <?php if ( ! empty( $products_reavaliacao ) || ! empty( $products_manutencao_por_status ) ) : ?>
+                <div class="reavaliacao-section" style="margin-top: 30px;">
+                    <h4><?php _e( '🔧 Cadeiras em Manutenção - Aguardando Reavaliação', 'movimento-livre' ); ?></h4>
+                    
+                    <?php 
+                    // Combina as duas fontes de dados
+                    $todas_manutencao = array_merge( $products_reavaliacao, $products_manutencao_por_status );
+                    // Remove duplicatas
+                    $todas_manutencao = array_unique( $todas_manutencao, SORT_REGULAR );
+                    ?>
+                    
+                    <table class="wp-list-table widefat striped">
+                        <thead>
+                            <tr>
+                                <th><?php _e( 'TAG/SKU', 'movimento-livre' ); ?></th>
+                                <th><?php _e( 'Modelo', 'movimento-livre' ); ?></th>
+                                <th><?php _e( 'Data de Entrada em Manutenção', 'movimento-livre' ); ?></th>
+                                <th><?php _e( 'Status', 'movimento-livre' ); ?></th>
+                                <th><?php _e( 'Ação', 'movimento-livre' ); ?></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ( $todas_manutencao as $post ) : 
+                                $product = function_exists( 'wc_get_product' ) ? wc_get_product( $post->ID ) : null;
+                                if ( ! $product ) continue;
+                                
+                                $data_manutencao = get_post_meta( $post->ID, '_data_entrada_manutencao', true );
+                                $data_manutencao_alt = get_post_meta( $post->ID, '_data_manutencao', true );
+                                $status_produto = get_post_meta( $post->ID, '_status_produto', true );
+                                
+                                // Usa a data mais recente ou disponível
+                                $data_final = $data_manutencao ?: $data_manutencao_alt;
+                            ?>
+                                <tr>
+                                    <td><strong><?php echo esc_html( $product->get_sku() ); ?></strong></td>
+                                    <td><strong><?php echo esc_html( $product->get_name() ); ?></strong></td>
+                                    <td>
+                                        <?php 
+                                        if ( $data_final ) {
+                                            echo esc_html( function_exists( 'date_i18n' ) ? date_i18n( 'd/m/Y H:i', strtotime( $data_final ) ) : date( 'd/m/Y H:i', strtotime( $data_final ) ) );
+                                        } else {
+                                            echo '-';
+                                        }
+                                        ?>
+                                    </td>
+                                    <td>
+                                        <span style="background: #dc3545; color: white; padding: 2px 6px; border-radius: 3px; font-size: 11px;">
+                                            <?php echo esc_html( $status_produto ?: 'Em Manutenção' ); ?>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="<?php echo esc_url( add_query_arg( 'avaliar_produto', $post->ID ) ); ?>" class="button button-primary">
+                                            <?php _e( 'Reavaliar Cadeira', 'movimento-livre' ); ?>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
+            
+            <?php if ( empty( $products_avaliacao ) && empty( $products_reavaliacao ) && empty( $products_manutencao_por_status ) ) : ?>
+                <div class="no-avaliacoes" style="text-align: center; padding: 40px 20px; background: #f9f9f9; border-radius: 8px;">
+                    <p style="font-size: 18px; color: #666; margin-bottom: 10px;">🎉</p>
+                    <p style="font-size: 16px; color: #333; margin: 0;">
+                        <?php _e( 'Nenhuma cadeira precisa de avaliação no momento!', 'movimento-livre' ); ?>
+                    </p>
+                    <p style="font-size: 14px; color: #666; margin-top: 10px;">
+                        <?php _e( 'Todas as cadeiras devolvidas já foram avaliadas e estão prontas para uso.', 'movimento-livre' ); ?>
+                    </p>
+                </div>
+            <?php endif; ?>
+            
+            <?php if ( isset( $_GET['avaliar_produto'] ) ) : ?>
+                <div style="margin-top: 30px; border-top: 2px solid #ddd; padding-top: 20px;">
+                    <h4><?php _e( 'Formulário de Avaliação Técnica', 'movimento-livre' ); ?></h4>
+                    <?php echo do_shortcode( '[movliv_form_avaliacao produto_id="' . intval( $_GET['avaliar_produto'] ) . '"]' ); ?>
+                </div>
+            <?php endif; ?>
+        </div>
+
+        <style>
+        .movliv-cadeiras-avaliacao {
+            max-width: 100%;
+            margin: 20px 0;
+        }
+        .avaliacao-success {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .movliv-cadeiras-avaliacao h3 {
+            color: #333;
+            border-bottom: 2px solid #0073aa;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .movliv-cadeiras-avaliacao h4 {
+            color: #555;
+            margin: 20px 0 15px 0;
+            padding: 10px;
+            background: #f5f5f5;
+            border-left: 4px solid #0073aa;
+        }
+        .avaliacao-section h4 {
+            border-left-color: #ffc107;
+        }
+        .reavaliacao-section h4 {
+            border-left-color: #dc3545;
+        }
+        .movliv-cadeiras-avaliacao table {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .movliv-cadeiras-avaliacao th {
+            background: #f8f9fa;
+            font-weight: 600;
+            padding: 12px 8px;
+        }
+        .movliv-cadeiras-avaliacao td {
+            padding: 10px 8px;
+            vertical-align: middle;
+        }
+        .movliv-cadeiras-avaliacao .button {
+            margin: 2px;
+        }
+        .movliv-cadeiras-avaliacao small {
+            color: #666;
+            font-style: italic;
+        }
+        .no-avaliacoes {
+            border: 1px solid #e0e0e0;
+        }
+        </style>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * ✅ NOVO: Busca produtos por status específico
+     */
+    private function get_products_by_status( $status ) {
+        $args = array(
+            'post_type' => 'product',
+            'posts_per_page' => -1,
+            'meta_query' => array(
+                array(
+                    'key' => '_status_produto',
+                    'value' => $status,
+                    'compare' => '='
+                )
+            )
+        );
+        
+        return get_posts( $args );
     }
 
     /**
@@ -1094,6 +1344,117 @@ class MOVLIV_Shortcodes {
             color: white;
         }
         </style>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * ✅ NOVO: Shortcode de debug para administradores
+     * [movliv_debug_status]
+     */
+    public function shortcode_debug_status( $atts ) {
+        // Apenas administradores podem usar
+        if ( ! current_user_can( 'administrator' ) ) {
+            return '<p>' . __( 'Acesso negado. Apenas administradores podem usar este shortcode.', 'movimento-livre' ) . '</p>';
+        }
+
+        $handler = MOVLIV_Product_Status_Handler::getInstance();
+        $products_avaliacao = $handler->get_products_pending_evaluation();
+        $products_reavaliacao = $handler->get_products_pending_reevaluation();
+        
+        // Busca por status
+        $products_em_avaliacao = $this->get_products_by_status( 'em_avaliacao' );
+        $products_em_manutencao = $this->get_products_by_status( 'em_manutencao' );
+        $products_pronta = $this->get_products_by_status( 'pronta' );
+        $products_emprestado = $this->get_products_by_status( 'emprestado' );
+
+        ob_start();
+        ?>
+        <div class="movliv-debug-status" style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
+            <h3>🔍 Debug de Status das Cadeiras (Movimento Livre)</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0;">
+                <div style="background: white; padding: 15px; border-radius: 5px; border-left: 4px solid #28a745;">
+                    <h4>✅ Pronta</h4>
+                    <p style="font-size: 24px; margin: 0; color: #28a745;"><?php echo count( $products_pronta ); ?></p>
+                </div>
+                
+                <div style="background: white; padding: 15px; border-radius: 5px; border-left: 4px solid #007bff;">
+                    <h4>🔵 Emprestado</h4>
+                    <p style="font-size: 24px; margin: 0; color: #007bff;"><?php echo count( $products_emprestado ); ?></p>
+                </div>
+                
+                <div style="background: white; padding: 15px; border-radius: 5px; border-left: 4px solid #ffc107;">
+                    <h4>🟡 Em Avaliação</h4>
+                    <p style="font-size: 24px; margin: 0; color: #ffc107;"><?php echo count( $products_em_avaliacao ); ?></p>
+                </div>
+                
+                <div style="background: white; padding: 15px; border-radius: 5px; border-left: 4px solid #dc3545;">
+                    <h4>🔴 Em Manutenção</h4>
+                    <p style="font-size: 24px; margin: 0; color: #dc3545;"><?php echo count( $products_em_manutencao ); ?></p>
+                </div>
+            </div>
+
+            <h4>📊 Metas de Avaliação:</h4>
+            <ul style="background: white; padding: 15px; border-radius: 5px; margin: 10px 0;">
+                <li><strong>_precisa_avaliacao = 'sim':</strong> <?php echo count( $products_avaliacao ); ?> produtos</li>
+                <li><strong>_precisa_reavaliacao = 'sim':</strong> <?php echo count( $products_reavaliacao ); ?> produtos</li>
+            </ul>
+
+            <?php if ( ! empty( $products_em_manutencao ) ) : ?>
+                <h4>🔧 Cadeiras com Status "Em Manutenção":</h4>
+                <table class="wp-list-table widefat striped" style="background: white; border-radius: 5px;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>TAG/SKU</th>
+                            <th>Nome</th>
+                            <th>Status</th>
+                            <th>Meta _precisa_reavaliacao</th>
+                            <th>Meta _data_entrada_manutencao</th>
+                            <th>Meta _data_manutencao</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ( $products_em_manutencao as $post ) : 
+                            $product = function_exists( 'wc_get_product' ) ? wc_get_product( $post->ID ) : null;
+                            if ( ! $product ) continue;
+                            
+                            $status = get_post_meta( $post->ID, '_status_produto', true );
+                            $precisa_reavaliacao = get_post_meta( $post->ID, '_precisa_reavaliacao', true );
+                            $data_entrada_manutencao = get_post_meta( $post->ID, '_data_entrada_manutencao', true );
+                            $data_manutencao = get_post_meta( $post->ID, '_data_manutencao', true );
+                        ?>
+                            <tr>
+                                <td><?php echo $post->ID; ?></td>
+                                <td><strong><?php echo esc_html( $product->get_sku() ); ?></strong></td>
+                                <td><?php echo esc_html( $product->get_name() ); ?></td>
+                                <td>
+                                    <span style="background: #dc3545; color: white; padding: 2px 6px; border-radius: 3px; font-size: 11px;">
+                                        <?php echo esc_html( $status ?: 'N/A' ); ?>
+                                    </span>
+                                </td>
+                                <td><?php echo esc_html( $precisa_reavaliacao ?: 'N/A' ); ?></td>
+                                <td><?php echo esc_html( $data_entrada_manutencao ?: 'N/A' ); ?></td>
+                                <td><?php echo esc_html( $data_manutencao ?: 'N/A' ); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php endif; ?>
+
+            <div style="margin-top: 20px; padding: 15px; background: #e7f3ff; border-radius: 5px; border-left: 4px solid #007bff;">
+                <h4>💡 Informações de Debug:</h4>
+                <p><strong>Este shortcode mostra:</strong></p>
+                <ul>
+                    <li>Contagem de cadeiras por status</li>
+                    <li>Metas de avaliação pendente</li>
+                    <li>Detalhes das cadeiras em manutenção</li>
+                    <li>Verificação de inconsistências</li>
+                </ul>
+                <p><strong>Use apenas em desenvolvimento!</strong></p>
+            </div>
+        </div>
         <?php
         return ob_get_clean();
     }

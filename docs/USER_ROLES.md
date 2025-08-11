@@ -7,13 +7,15 @@ Este documento descreve os papéis (roles) de usuário definidos ou estendidos p
 ## 🧑‍⚕️ 1. movliv_colaborador
 
 ### Descrição:
-Colaborador do Instituto com acesso restrito a recursos operacionais (sem acesso administrativo completo).
+Colaborador do Instituto com acesso a recursos operacionais incluindo avaliação e devolução de cadeiras.
 
 ### Permissões:
 - Visualizar lista de pedidos (empréstimos)
 - Visualizar e anexar formulários de devolução
 - Visualizar cadeiras (produtos)
-- Acessar formulários de avaliação (somente leitura)
+- **NOVO:** Preencher formulários de avaliação técnica
+- **NOVO:** Alterar status do produto (Pronta, Em Avaliação, Em Manutenção)
+- **NOVO:** Visualizar histórico de avaliações por produto
 
 ---
 

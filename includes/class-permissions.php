@@ -49,7 +49,9 @@ class MOVLIV_Permissions {
                 'read' => true,
                 'movliv_view_orders' => true,
                 'movliv_manage_forms' => true,
-                'movliv_view_cadeiras' => true
+                'movliv_view_cadeiras' => true,
+                'movliv_submit_evaluation' => true,
+                'movliv_manage_status' => true
             )
         ),
         'movliv_avaliador' => array(

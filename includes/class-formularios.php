@@ -477,7 +477,7 @@ class MOVLIV_Formularios {
                 __( 'Avaliação enviada com sucesso! %s', 'movimento-livre' ),
                 $status_message
             ),
-            'redirect' => admin_url( 'admin.php?page=movimento-livre-cadeiras&avaliacao_completed=1' ),
+            'redirect' => home_url( '/avaliacao/?avaliacao_completed=1' ),
             'pdf_url' => $pdf_url,
         ) );
     }

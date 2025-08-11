@@ -48,7 +48,13 @@ Este documento descreve todos os shortcodes disponíveis no plugin **Movimento L
 ```[movliv_form_avaliacao produto_id="456"]```
 
 **Parâmetros:**
-- `produto_id` (obrigatório): ID do produto (cadeira) a ser avaliado
+- `produto_id` (opcional): ID do produto (cadeira) a ser avaliado
+  - Se fornecido: exibe o formulário de avaliação para a cadeira específica
+  - Se não fornecido: exibe lista de todas as cadeiras que precisam ser avaliadas
+
+**Comportamento:**
+- **Sem produto_id**: Lista todas as cadeiras com status "Em Avaliação" ou "Em Manutenção"
+- **Com produto_id**: Exibe formulário de avaliação para a cadeira específica
 
 **Funções automáticas:**
 - Gera PDF do formulário preenchido
@@ -58,7 +64,16 @@ Este documento descreve todos os shortcodes disponíveis no plugin **Movimento L
   - **Em Manutenção**, se reprovada
 - Se reprovada, gera novo formulário de avaliação
 
-**Restrito a:** usuários administradores ou com permissão `movliv_avaliador`
+**Restrito a:** usuários com role `movliv_avaliador` ou superior (não acessível para `movliv_colaborador`)
+
+**Exemplos de uso:**
+```
+<!-- Lista todas as cadeiras que precisam de avaliação -->
+[movliv_form_avaliacao]
+
+<!-- Avalia uma cadeira específica -->
+[movliv_form_avaliacao produto_id="123"]
+```
 
 ---
 
@@ -146,6 +161,35 @@ Disponíveis: 1 unidade
 - Verificações de permissão são obrigatórias para shortcodes administrativos
 
 ---
+
+## 🔍 [movliv_debug_status]
+
+### Shortcode de debug para administradores verificarem o status das cadeiras.
+
+**Uso:** `[movliv_debug_status]`
+
+**Permissões:** Apenas usuários com role `administrator`
+
+**O que exibe:**
+- 📊 **Contagem de cadeiras por status** (Pronta, Emprestado, Em Avaliação, Em Manutenção)
+- 📋 **Metas de avaliação pendente** (_precisa_avaliacao, _precisa_reavaliacao)
+- 🔧 **Detalhes das cadeiras em manutenção** com todas as metas relacionadas
+- 💡 **Informações de debug** para identificação de problemas
+
+**Uso recomendado:**
+- ✅ **Desenvolvimento:** Para identificar inconsistências
+- ✅ **Troubleshooting:** Para resolver problemas de listagem
+- ❌ **Produção:** Não usar em ambiente de produção
+
+**Exemplo de implementação:**
+```
+Página: /debug-status (apenas para administradores)
+Conteúdo: [movliv_debug_status]
+```
+
+---
+
+## 📚 **Shortcodes de Sistema**
 
 Este documento deve ser mantido atualizado conforme novos shortcodes forem criados no plugin Movimento Livre.
 

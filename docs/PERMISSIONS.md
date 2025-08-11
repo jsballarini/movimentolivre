@@ -26,8 +26,8 @@ As permissões são associadas a roles customizadas, mas também podem ser atrib
 
 | Role                 | Permissões Atribuídas                                                                                           |
 | -------------------- | --------------------------------------------------------------------------------------------------------------- |
-| `movliv_colaborador` | `movliv_view_orders`, `movliv_manage_forms`, `movliv_view_cadeiras`                                             |
-| `movliv_avaliador`   | Todas as de `movliv_colaborador` + `movliv_submit_evaluation`, `movliv_manage_status`                           |
+| `movliv_colaborador` | `movliv_view_orders`, `movliv_manage_forms`, `movliv_view_cadeiras`, `movliv_submit_evaluation`, `movliv_manage_status` |
+| `movliv_avaliador`   | Todas as de `movliv_colaborador` (mesmas permissões)                                                           |
 | `movliv_admin`       | Todas as acima + `movliv_view_reports`, `movliv_manage_settings`, `movliv_manage_roles`, `movliv_manage_emails` |
 
 ---
