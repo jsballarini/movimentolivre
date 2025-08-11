@@ -90,8 +90,11 @@
     // Empréstimo
     var $emprestimoForm = $('#movliv-emprestimo-form');
     if ($emprestimoForm.length) {
+      // ✅ CORREÇÃO: Define a ação correta para o formulário
+      $emprestimoForm.find('input[name="action"]').val('movliv_submit_emprestimo');
+      
       handleAjaxSubmit($emprestimoForm, function($f) {
-        // Campos obrigatórios principais
+        // ✅ CORREÇÃO: Campos obrigatórios atualizados para corresponder ao HTML
         var requiredIds = [
           '#data_prevista_devolucao',
           '#responsavel_atendimento',

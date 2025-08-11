@@ -150,6 +150,10 @@ class MOVLIV_Formularios {
      * Processa formulário de empréstimo
      */
     public function handle_emprestimo_form() {
+        // ✅ DEBUG: Log dos dados recebidos
+        error_log( "MovLiv: handle_emprestimo_form() chamado" );
+        error_log( "MovLiv: POST data: " . print_r( $_POST, true ) );
+        
         // Verifica nonce
         if ( ! wp_verify_nonce( $_POST['nonce'], 'movliv_form_nonce' ) ) {
             wp_send_json_error( 'Token inválido.' );
@@ -188,6 +192,12 @@ class MOVLIV_Formularios {
         update_post_meta( $order_id, '_movliv_padrinho_estado', $form_data['padrinho_estado'] );
         update_post_meta( $order_id, '_movliv_padrinho_cep', $form_data['padrinho_cep'] );
         update_post_meta( $order_id, '_movliv_padrinho_telefone', $form_data['padrinho_telefone'] );
+        
+        // ✅ DEBUG: Log dos dados salvos
+        error_log( "MovLiv: Dados do padrinho salvos para pedido {$order_id}:" );
+        error_log( "MovLiv: - Nome: " . $form_data['padrinho_nome'] );
+        error_log( "MovLiv: - CPF: " . $form_data['padrinho_cpf'] );
+        error_log( "MovLiv: - Endereço: " . $form_data['padrinho_endereco'] );
 
         // ✅ CORREÇÃO: Gera PDF usando a classe PDF Generator
         $pdf_generator = MOVLIV_PDF_Generator::getInstance();
@@ -430,7 +440,10 @@ class MOVLIV_Formularios {
         $required_fields = array(
             'nome' => 'Nome completo',
             'telefone' => 'Telefone',
-            'endereco' => 'Endereço',
+            'rua' => 'Rua',
+            'cidade' => 'Cidade',
+            'estado' => 'Estado',
+            'cep' => 'CEP',
             'data_prevista_devolucao' => 'Data prevista de devolução',
             'responsavel_atendimento' => 'Responsável pelo atendimento',
             'padrinho_nome' => 'Nome do Padrinho',
@@ -453,10 +466,34 @@ class MOVLIV_Formularios {
             return $errors;
         }
         
+        // ✅ DEBUG: Log dos dados validados
+        error_log( "MovLiv: Dados do padrinho validados:" );
+        error_log( "MovLiv: - padrinho_nome: " . ( $data['padrinho_nome'] ?? 'NÃO ENVIADO' ) );
+        error_log( "MovLiv: - padrinho_cpf: " . ( $data['padrinho_cpf'] ?? 'NÃO ENVIADO' ) );
+        error_log( "MovLiv: - padrinho_endereco: " . ( $data['padrinho_endereco'] ?? 'NÃO ENVIADO' ) );
+        
+        // ✅ CORREÇÃO: Monta endereço completo a partir dos campos separados
+        $endereco_completo = sanitize_text_field( $data['rua'] );
+        if ( ! empty( $data['numero'] ) ) {
+            $endereco_completo .= ', ' . sanitize_text_field( $data['numero'] );
+        }
+        if ( ! empty( $data['complemento'] ) ) {
+            $endereco_completo .= ', ' . sanitize_text_field( $data['complemento'] );
+        }
+        if ( ! empty( $data['cidade'] ) ) {
+            $endereco_completo .= ' - ' . sanitize_text_field( $data['cidade'] );
+        }
+        if ( ! empty( $data['estado'] ) ) {
+            $endereco_completo .= '/' . sanitize_text_field( $data['estado'] );
+        }
+        if ( ! empty( $data['cep'] ) ) {
+            $endereco_completo .= ' - CEP: ' . sanitize_text_field( $data['cep'] );
+        }
+        
         return array(
             'nome' => sanitize_text_field( $data['nome'] ),
             'telefone' => sanitize_text_field( $data['telefone'] ),
-            'endereco' => sanitize_textarea_field( $data['endereco'] ),
+            'endereco' => $endereco_completo,
             'data_prevista_devolucao' => sanitize_text_field( $data['data_prevista_devolucao'] ),
             'responsavel_atendimento' => sanitize_text_field( $data['responsavel_atendimento'] ),
             'observacoes' => sanitize_textarea_field( $data['observacoes'] ?? '' ),
