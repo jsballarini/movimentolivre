@@ -166,17 +166,8 @@ class MOVLIV_PDF_Generator {
                 return $this->generate_pdf_with_dompdf( $html, $filename );
             }
             
-            // ✅ FALLBACK: Salva como HTML com extensão PDF (temporário)
-            // Permite que o sistema funcione mesmo sem biblioteca PDF
-            $pdf_path = $this->upload_dir . $filename;
-            
-            // Converte HTML para formato mais limpo
-            $clean_html = $this->clean_html_for_pdf( $html );
-            
-            if ( file_put_contents( $pdf_path, $clean_html ) ) {
-                error_log( "MovLiv: PDF salvo como HTML em {$pdf_path}" );
-                return $pdf_path;
-            }
+            // ✅ FALLBACK: Salvar como .html ao invés de .pdf para evitar confusão
+            return $this->generate_pdf_as_html( $html, $filename );
             
         } catch ( Exception $e ) {
             error_log( 'MovLiv PDF Error: ' . $e->getMessage() );
@@ -257,18 +248,52 @@ class MOVLIV_PDF_Generator {
      * Verifica se biblioteca PDF está disponível
      */
     private function check_pdf_library() {
-        return class_exists( 'Dompdf\Dompdf' ) || file_exists( WP_PLUGIN_DIR . '/dompdf/autoload.inc.php' );
+        if ( class_exists( 'Dompdf\\Dompdf' ) ) {
+            return true;
+        }
+
+        $possible_autoloads = array(
+            // Vendor dentro do próprio plugin
+            ( defined( 'MOVLIV_PLUGIN_PATH' ) ? MOVLIV_PLUGIN_PATH : plugin_dir_path( __DIR__ ) ) . 'vendor/autoload.php',
+            // Vendor na raiz do WP
+            ABSPATH . 'vendor/autoload.php',
+            // Vendor dentro de wp-content
+            ( defined( 'WP_CONTENT_DIR' ) ? WP_CONTENT_DIR : WP_CONTENT_DIR ) . '/vendor/autoload.php',
+            // Instalação como plugin separado dompdf
+            WP_PLUGIN_DIR . '/dompdf/autoload.inc.php',
+        );
+
+        foreach ( $possible_autoloads as $autoload ) {
+            if ( file_exists( $autoload ) ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
      * Obtém caminho da biblioteca PDF
      */
     private function get_pdf_library_path() {
-        if ( file_exists( WP_PLUGIN_DIR . '/dompdf/autoload.inc.php' ) ) {
-            return WP_PLUGIN_DIR . '/dompdf/autoload.inc.php';
+        $candidates = array(
+            // Vendor dentro do plugin
+            ( defined( 'MOVLIV_PLUGIN_PATH' ) ? MOVLIV_PLUGIN_PATH : plugin_dir_path( __DIR__ ) ) . 'vendor/autoload.php',
+            // Raiz do WP (Composer na raiz)
+            ABSPATH . 'vendor/autoload.php',
+            // wp-content/vendor
+            ( defined( 'WP_CONTENT_DIR' ) ? WP_CONTENT_DIR : WP_CONTENT_DIR ) . '/vendor/autoload.php',
+            // Plugin dompdf dedicado
+            WP_PLUGIN_DIR . '/dompdf/autoload.inc.php',
+        );
+
+        foreach ( $candidates as $path ) {
+            if ( file_exists( $path ) ) {
+                return $path;
+            }
         }
-        
-        // Caminho padrão se instalado via Composer
+
+        // Último recurso: retornar caminho da raiz
         return ABSPATH . 'vendor/autoload.php';
     }
 

@@ -50,22 +50,10 @@ class MOVLIV_Order_Hooks {
         add_filter( 'woocommerce_cart_needs_payment', array( $this, 'disable_payment_for_free_loans' ), 10, 2 );
         
         // ✅ NOVO: Hook para controlar status de pedidos gratuitos
-        add_filter( 'woocommerce_payment_complete_order_status', array( $this, 'prevent_auto_processing_for_loans' ), 10, 3 );
+        add_action( 'woocommerce_payment_complete_order_status', array( $this, 'prevent_auto_processing_for_loans' ), 10, 3 );
         
-        // ✅ NOVO: Hook para interceptar status no momento da criação (prioridade alta)
-        add_filter( 'woocommerce_new_order_status', array( $this, 'force_new_order_status' ), 999, 2 );
-        
-        // ✅ NOVO: Hook para interceptar status após criação (prioridade alta)
-        add_action( 'woocommerce_checkout_order_created', array( $this, 'ensure_loan_status_after_creation' ), 999, 1 );
-        
-        // ✅ NOVO: Hook para interceptar status imediatamente após criação (prioridade média)
-        add_action( 'woocommerce_checkout_order_created', array( $this, 'force_loan_status_immediate' ), 10, 1 );
-        
-        // ✅ NOVO: Hook para interceptar mudanças de status em tempo real (prioridade baixa)
-        add_action( 'woocommerce_order_status_changed', array( $this, 'intercept_status_change' ), 5, 4 );
-        
-        // ✅ NOVO: Hook para prevenir mudanças automáticas de status (prioridade alta)
-        add_filter( 'woocommerce_order_status_changed', array( $this, 'prevent_automatic_status_changes' ), 1, 4 );
+        // ✅ NOVO: Hook no momento da criação do pedido no checkout
+        add_action( 'woocommerce_checkout_order_created', array( $this, 'set_initial_loan_status' ), 10, 1 );
         
         // ✅ NOVO: Hook para redirecionamento após checkout bem-sucedido
         add_action( 'woocommerce_thankyou', array( $this, 'redirect_to_loan_form' ), 5, 1 );
@@ -76,6 +64,24 @@ class MOVLIV_Order_Hooks {
         // ✅ CORREÇÃO: Hook mais específico para garantir status correto
         add_action( 'woocommerce_checkout_order_processed', array( $this, 'force_loan_status' ), 1, 1 );
         add_action( 'woocommerce_new_order', array( $this, 'after_order_created' ), 20, 1 );
+        
+        // ✅ NOVO: Hook para interceptar status logo após criação
+        add_action( 'woocommerce_checkout_order_created', array( $this, 'force_loan_status_immediate' ), 1, 1 );
+        
+        // ✅ NOVO: Hook para interceptar mudanças de status em tempo real
+        add_action( 'woocommerce_order_status_changed', array( $this, 'intercept_status_change' ), 5, 4 );
+        
+        // ✅ NOVO: Hook para interceptar status no momento da criação
+        add_filter( 'woocommerce_new_order_status', array( $this, 'force_new_order_status' ), 999, 2 );
+        
+        // ✅ NOVO: Hook para prevenir mudanças automáticas de status
+        add_filter( 'woocommerce_order_status_changed', array( $this, 'prevent_automatic_status_changes' ), 1, 4 );
+        
+        // ✅ NOVO: Hook para interceptar status no momento da criação
+        add_filter( 'woocommerce_new_order_status', array( $this, 'force_new_order_status' ), 999, 2 );
+        
+        // ✅ NOVO: Hook para interceptar status após criação
+        add_action( 'woocommerce_checkout_order_created', array( $this, 'ensure_loan_status_after_creation' ), 999, 1 );
         
         // Modifica labels no admin
         add_filter( 'gettext', array( $this, 'change_woocommerce_labels' ), 20, 3 );

@@ -4,11 +4,11 @@
 ![WooCommerce](https://img.shields.io/badge/WooCommerce-8.0+-purple.svg)
 ![PHP](https://img.shields.io/badge/PHP-8.0+-777BB4.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
-![Version](https://img.shields.io/badge/version-0.0.4-orange.svg)
+![Version](https://img.shields.io/badge/version-0.0.5-orange.svg)
 
 **Plugin WordPress que transforma o WooCommerce em um sistema social de empréstimos gratuitos de cadeiras de rodas para o Instituto Bernardo Ferreira - Um Legado em Movimento.**
 
-**🆕 Versão 0.0.4**: Correções de notificações (status nativos), criação do `forms.js` (AJAX dos formulários) e unificação de versão/documentação.
+**🆕 Versão 0.0.5**: Correções na geração de PDFs (autoload Dompdf, teste cross‑platform, fallback para HTML quando sem biblioteca instalada).
 
 ---
 

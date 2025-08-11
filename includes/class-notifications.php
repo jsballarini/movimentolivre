@@ -45,6 +45,11 @@ class MOVLIV_Notifications {
         add_filter( 'woocommerce_email_subject_new_order', array( $this, 'custom_email_subject' ), 10, 2 );
         add_filter( 'woocommerce_email_subject_customer_processing_order', array( $this, 'custom_email_subject' ), 10, 2 );
         
+        // ✅ NOVO: Desabilita emails nativos do WooCommerce para evitar duplicação
+        add_filter( 'woocommerce_email_enabled_new_order', array( $this, 'disable_woocommerce_emails' ), 10, 2 );
+        add_filter( 'woocommerce_email_enabled_customer_processing_order', array( $this, 'disable_woocommerce_emails' ), 10, 2 );
+        add_filter( 'woocommerce_email_enabled_customer_completed_order', array( $this, 'disable_woocommerce_emails' ), 10, 2 );
+        
         // Agenda verificações periódicas
         add_action( 'movliv_check_emprestimos_vencendo', array( $this, 'check_emprestimos_vencendo' ) );
         if ( ! wp_next_scheduled( 'movliv_check_emprestimos_vencendo' ) ) {
@@ -56,19 +61,32 @@ class MOVLIV_Notifications {
      * Manipula notificações baseadas em mudanças de status de pedidos
      */
     public function handle_order_status_notifications( $order_id, $old_status, $new_status, $order ) {
+        // ✅ NOVO: Controle de duplicação - verifica se já foi processado
+        $formulario_processado = get_post_meta( $order_id, '_movliv_formulario_processado', true );
+        $formulario_devolucao_processado = get_post_meta( $order_id, '_movliv_formulario_devolucao_processado', true );
+        
         switch ( $new_status ) {
             case 'on-hold': // Aguardando
-                $this->send_solicitacao_recebida( $order );
-                $this->notify_admin_nova_solicitacao( $order );
+                // Só envia se não foi processado manualmente
+                if ( ! $formulario_processado ) {
+                    $this->send_solicitacao_recebida( $order );
+                    $this->notify_admin_nova_solicitacao( $order );
+                }
                 break;
 
             case 'processing': // Emprestado
-                $this->send_emprestimo_confirmado( $order );
+                // Só envia se não foi processado manualmente
+                if ( ! $formulario_processado ) {
+                    $this->send_emprestimo_confirmado( $order );
+                }
                 break;
 
             case 'completed': // Devolvido
-                $this->send_devolucao_confirmada( $order );
-                $this->notify_avaliadores_produto_devolvido( $order );
+                // Só envia se não foi processado manualmente
+                if ( ! $formulario_devolucao_processado ) {
+                    $this->send_devolucao_confirmada( $order );
+                    $this->notify_avaliadores_produto_devolvido( $order );
+                }
                 break;
         }
     }
@@ -294,6 +312,15 @@ class MOVLIV_Notifications {
     }
 
     /**
+     * ✅ NOVO: Desabilita emails nativos do WooCommerce para evitar duplicação
+     */
+    public function disable_woocommerce_emails( $enabled, $order ) {
+        // Desabilita emails nativos para pedidos do Movimento Livre
+        // As notificações personalizadas já cobrem esses casos
+        return false;
+    }
+
+    /**
      * Customiza assuntos dos emails do WooCommerce
      */
     public function custom_email_subject( $subject, $order ) {
@@ -434,29 +461,69 @@ class MOVLIV_Notifications {
      * Envia email com configurações apropriadas
      */
     private function send_email( $to, $subject, $message, $headers = array(), $attachments = array() ) {
-        $default_headers = array(
-            'Content-Type: text/html; charset=UTF-8',
-            'From: ' . get_bloginfo( 'name' ) . ' <' . get_option( 'admin_email' ) . '>'
-        );
+        // Log para debug
+        error_log( "MovLiv: Iniciando send_email para {$to}" );
+        error_log( "MovLiv: Assunto: {$subject}" );
+        error_log( "MovLiv: Tamanho da mensagem: " . strlen( $message ) );
         
-        $headers = array_merge( $default_headers, $headers );
-
-        return wp_mail( $to, $subject, $message, $headers, $attachments );
+        try {
+            $default_headers = array(
+                'Content-Type: text/html; charset=UTF-8',
+                'From: ' . get_bloginfo( 'name' ) . ' <' . get_option( 'admin_email' ) . '>'
+            );
+            
+            $headers = array_merge( $default_headers, $headers );
+            
+            error_log( "MovLiv: Headers finais: " . print_r( $headers, true ) );
+            
+            $result = wp_mail( $to, $subject, $message, $headers, $attachments );
+            
+            error_log( "MovLiv: Resultado do wp_mail: " . ( $result ? 'true' : 'false' ) );
+            
+            return $result;
+            
+        } catch ( Exception $e ) {
+            error_log( "MovLiv: Exceção em send_email: " . $e->getMessage() );
+            return false;
+        } catch ( Error $e ) {
+            error_log( "MovLiv: Erro fatal em send_email: " . $e->getMessage() );
+            return false;
+        }
     }
 
     /**
      * Envia notificação de teste (para debug)
      */
     public function send_test_notification( $email, $type = 'test' ) {
-        $subject = sprintf( 
-            __( '[%s] Teste de Notificação', 'movimento-livre' ),
-            get_bloginfo( 'name' )
-        );
+        // Log para debug
+        error_log( "MovLiv: Iniciando send_test_notification para {$email}" );
         
-        $message = "<h2>Teste de Notificação</h2>";
-        $message .= "<p>Este é um email de teste do sistema Movimento Livre.</p>";
-        $message .= "<p>Data/Hora: " . current_time( 'd/m/Y H:i:s' ) . "</p>";
-        
-        return $this->send_email( $email, $subject, $message );
+        try {
+            $subject = sprintf( 
+                '[%s] Teste de Notificação',
+                get_bloginfo( 'name' )
+            );
+            
+            error_log( "MovLiv: Assunto criado: {$subject}" );
+            
+            $message = "<h2>Teste de Notificação</h2>";
+            $message .= "<p>Este é um email de teste do sistema Movimento Livre.</p>";
+            $message .= "<p>Data/Hora: " . current_time( 'd/m/Y H:i:s' ) . "</p>";
+            
+            error_log( "MovLiv: Mensagem criada, tamanho: " . strlen( $message ) );
+            
+            $result = $this->send_email( $email, $subject, $message );
+            
+            error_log( "MovLiv: Resultado do send_email: " . ( $result ? 'true' : 'false' ) );
+            
+            return $result;
+            
+        } catch ( Exception $e ) {
+            error_log( "MovLiv: Exceção em send_test_notification: " . $e->getMessage() );
+            return false;
+        } catch ( Error $e ) {
+            error_log( "MovLiv: Erro fatal em send_test_notification: " . $e->getMessage() );
+            return false;
+        }
     }
 } 

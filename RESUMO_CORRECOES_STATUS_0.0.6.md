@@ -29,6 +29,7 @@
 
 ```
 CAMADA 1: INTERCEPTAÇÃO INICIAL (Prioridade 999)
+├── woocommerce_order_status
 ├── woocommerce_new_order_status
 └── Garante status "Aguardando" desde a criação
 
@@ -61,17 +62,22 @@ CAMADA 3: PREVENÇÃO DE MUDANÇAS (Prioridade 1)
 
 ## 🛠️ **FUNÇÕES IMPLEMENTADAS**
 
-### **1. `force_new_order_status()`**
+### **1. `force_initial_loan_status()`**
+- **Objetivo:** Intercepta status inicial com prioridade máxima
+- **Hook:** `woocommerce_order_status` (Prioridade 999)
+- **Resultado:** Status "Aguardando" forçado desde a criação
+
+### **2. `force_new_order_status()`**
 - **Objetivo:** Intercepta status no momento da criação do pedido
 - **Hook:** `woocommerce_new_order_status` (Prioridade 999)
 - **Resultado:** Status correto garantido no momento da criação
 
-### **2. `ensure_loan_status_after_creation()`**
+### **3. `ensure_loan_status_after_creation()`**
 - **Objetivo:** Garante status correto após criação
 - **Hook:** `woocommerce_checkout_order_created` (Prioridade 999)
 - **Resultado:** Status confirmado e meta fields definidos
 
-### **3. `prevent_automatic_status_changes()`**
+### **4. `prevent_automatic_status_changes()`**
 - **Objetivo:** Previne mudanças automáticas sem formulário
 - **Hook:** `woocommerce_order_status_changed` (Prioridade 1)
 - **Resultado:** Mudanças bloqueadas até formulário ser enviado
@@ -177,11 +183,13 @@ A versão **0.0.6** representa um marco fundamental no desenvolvimento do plugin
 
 ## 📋 **CHECKLIST DE VALIDAÇÃO**
 
-- [x] **Hook `woocommerce_new_order_status`** com prioridade 999
-- [x] **Hook `woocommerce_checkout_order_created`** com prioridade 999
-- [x] **Hook `woocommerce_order_status_changed`** com prioridade 1
-- [x] **Função `force_new_order_status()`** implementada
-- [x] **Função `ensure_loan_status_after_creation()`** implementada
-- [x] **Função `prevent_automatic_status_changes()`** implementada
+- [x] **Código implementado** e testado
+- [x] **Documentação atualizada** (CHANGELOG, STATUS, etc.)
+- [x] **Versão incrementada** para 0.0.6
+- [x] **Logs de debug** implementados
+- [x] **Meta fields automáticos** funcionando
+- [x] **Sistema de hooks** em camadas implementado
+- [x] **Prevenção de mudanças automáticas** funcionando
+- [x] **Arquivo de documentação técnica** criado
 
 **Status:** ✅ **IMPLEMENTAÇÃO COMPLETA E PRONTA PARA PRODUÇÃO**

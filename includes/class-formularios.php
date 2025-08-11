@@ -40,6 +40,38 @@ class MOVLIV_Formularios {
     }
 
     /**
+     * Garante que a biblioteca Dompdf esteja carregada (autoload Composer)
+     * Retorna true se a classe Dompdf estiver disponível.
+     */
+    private function ensure_dompdf_loaded() {
+        if ( class_exists( 'Dompdf\\Dompdf' ) ) {
+            return true;
+        }
+
+        $candidates = array(
+            // vendor dentro do plugin
+            ( defined( 'MOVLIV_PLUGIN_PATH' ) ? MOVLIV_PLUGIN_PATH : plugin_dir_path( __DIR__ ) ) . 'vendor/autoload.php',
+            // vendor no wp-content
+            ( defined( 'WP_CONTENT_DIR' ) ? WP_CONTENT_DIR : WP_CONTENT_DIR ) . '/vendor/autoload.php',
+            // vendor na raiz do WP
+            ABSPATH . 'vendor/autoload.php',
+            // plugin dompdf dedicado
+            WP_PLUGIN_DIR . '/dompdf/autoload.inc.php',
+        );
+
+        foreach ( $candidates as $autoload ) {
+            if ( file_exists( $autoload ) ) {
+                require_once $autoload;
+                if ( class_exists( 'Dompdf\\Dompdf' ) ) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Inicializa hooks
      */
     public function init_hooks() {
@@ -199,7 +231,8 @@ class MOVLIV_Formularios {
         error_log( "MovLiv: - CPF: " . $form_data['padrinho_cpf'] );
         error_log( "MovLiv: - Endereço: " . $form_data['padrinho_endereco'] );
 
-        // ✅ CORREÇÃO: Gera PDF usando a classe PDF Generator
+        // ✅ CORREÇÃO: Garante Dompdf carregado e gera PDF usando a classe PDF Generator
+        $this->ensure_dompdf_loaded();
         $pdf_generator = MOVLIV_PDF_Generator::getInstance();
         $pdf_path = $pdf_generator->generate_emprestimo_pdf( $order_id, $form_data );
         
@@ -211,8 +244,12 @@ class MOVLIV_Formularios {
         update_post_meta( $order_id, '_formulario_emprestimo_pdf', $pdf_path );
         update_post_meta( $order_id, '_form_emprestimo_pdf', $pdf_path );
 
-        // ✅ NOVO: Atualiza status do pedido para "Processando" (Emprestado)
+        // ✅ CORREÇÃO: Atualiza status do pedido para "Processando" (Emprestado)
         $order->update_status( 'processing', __( 'Formulário de empréstimo recebido. Cadeira emprestada.', 'movimento-livre' ) );
+        
+        // ✅ CORREÇÃO: Não chama notificações manualmente - elas são disparadas automaticamente pelo hook woocommerce_order_status_changed
+        // Marca que o formulário foi processado para evitar duplicação
+        update_post_meta( $order_id, '_movliv_formulario_processado', current_time( 'mysql' ) );
         
         // ✅ NOVO: Atualiza status das cadeiras e reduz estoque
         foreach ( $order->get_items() as $item ) {
@@ -248,9 +285,12 @@ class MOVLIV_Formularios {
             )
         );
 
+        $pdf_url = $pdf_generator->get_pdf_download_url( $pdf_path );
+
         wp_send_json_success( array(
             'message' => __( 'Formulário de empréstimo enviado com sucesso! Cadeira(s) emprestada(s).', 'movimento-livre' ),
-            'redirect' => $this->get_success_page_url( 'emprestimo' )
+            'redirect' => $this->get_success_page_url( 'emprestimo' ),
+            'pdf_url' => $pdf_url,
         ) );
     }
 
@@ -277,7 +317,8 @@ class MOVLIV_Formularios {
             wp_send_json_error( $form_data->get_error_message() );
         }
 
-        // ✅ CORREÇÃO: Gera PDF usando a classe PDF Generator
+        // ✅ CORREÇÃO: Garante Dompdf carregado e gera PDF usando a classe PDF Generator
+        $this->ensure_dompdf_loaded();
         $pdf_generator = MOVLIV_PDF_Generator::getInstance();
         $pdf_path = $pdf_generator->generate_devolucao_pdf( $order_id, $form_data );
         
@@ -291,6 +332,10 @@ class MOVLIV_Formularios {
 
         // Atualiza status do pedido para "Devolvido" (status nativo completed)
         $order->update_status( 'completed', __( 'Formulário de devolução recebido. Cadeira devolvida para avaliação.', 'movimento-livre' ) );
+        
+        // ✅ CORREÇÃO: Não chama notificações manualmente - elas são disparadas automaticamente pelo hook woocommerce_order_status_changed
+        // Marca que o formulário foi processado para evitar duplicação
+        update_post_meta( $order_id, '_movliv_formulario_devolucao_processado', current_time( 'mysql' ) );
         
         // ✅ CORREÇÃO: Atualiza status das cadeiras para "Em Avaliação" e gera formulários de avaliação
         foreach ( $order->get_items() as $item ) {
@@ -324,9 +369,12 @@ class MOVLIV_Formularios {
             )
         );
 
+        $pdf_url = $pdf_generator->get_pdf_download_url( $pdf_path );
+
         wp_send_json_success( array(
             'message' => __( 'Formulário de devolução enviado com sucesso! Cadeira(s) enviada(s) para avaliação.', 'movimento-livre' ),
-            'redirect' => $this->get_success_page_url( 'devolucao' )
+            'redirect' => $this->get_success_page_url( 'devolucao' ),
+            'pdf_url' => $pdf_url,
         ) );
     }
 
@@ -358,7 +406,8 @@ class MOVLIV_Formularios {
             wp_send_json_error( $form_data->get_error_message() );
         }
 
-        // ✅ CORREÇÃO: Gera PDF usando a classe PDF Generator
+        // ✅ CORREÇÃO: Garante Dompdf carregado e gera PDF usando a classe PDF Generator
+        $this->ensure_dompdf_loaded();
         $pdf_generator = MOVLIV_PDF_Generator::getInstance();
         $pdf_path = $pdf_generator->generate_avaliacao_pdf( $product_id, $form_data );
         
@@ -421,12 +470,15 @@ class MOVLIV_Formularios {
         $handler = MOVLIV_Product_Status_Handler::getInstance();
         $handler->mark_product_evaluated( $product_id );
 
+        $pdf_url = $pdf_generator->get_pdf_download_url( $pdf_path );
+
         wp_send_json_success( array(
             'message' => sprintf( 
                 __( 'Avaliação enviada com sucesso! %s', 'movimento-livre' ),
                 $status_message
             ),
-            'redirect' => admin_url( 'admin.php?page=movimento-livre-cadeiras&avaliacao_completed=1' )
+            'redirect' => admin_url( 'admin.php?page=movimento-livre-cadeiras&avaliacao_completed=1' ),
+            'pdf_url' => $pdf_url,
         ) );
     }
 

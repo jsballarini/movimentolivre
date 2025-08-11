@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name: Movimento Livre
+ * Plugin Name: Movimento Livre - Sistema de Empréstimos de Cadeiras de Rodas
  * Plugin URI: https://github.com/jsballarini
- * Description: Sistema social de empréstimos gratuitos de cadeiras de rodas para o Instituto Bernardo Ferreira - Um Legado em Movimento. Transforma o WooCommerce em uma plataforma robusta de empréstimos, devoluções, avaliações e controle de estoque social.
- * Version: 0.0.4
+ * Description: Sistema completo para gerenciar empréstimos solidários de cadeiras de rodas, integrado ao WooCommerce.
+ * Version: 0.0.6
  * Author: Juliano Ballarini
  * Author URI: https://github.com/jsballarini
  * Text Domain: movimento-livre
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define constantes do plugin
-define( 'MOVLIV_VERSION', '0.0.4' );
+define( 'MOVLIV_VERSION', '0.0.6' );
 define( 'MOVLIV_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'MOVLIV_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'MOVLIV_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
@@ -69,6 +69,19 @@ class MovimentoLivre {
 
         // Carrega textdomain para traduções
         load_plugin_textdomain( 'movimento-livre', false, dirname( MOVLIV_PLUGIN_BASENAME ) . '/languages' );
+
+        // Carrega autoload do Composer (Dompdf, etc.) se existir
+        $autoload_paths = array(
+            MOVLIV_PLUGIN_PATH . 'vendor/autoload.php',
+            WP_CONTENT_DIR . '/vendor/autoload.php',
+            ABSPATH . 'vendor/autoload.php',
+        );
+        foreach ( $autoload_paths as $autoload_path ) {
+            if ( file_exists( $autoload_path ) ) {
+                require_once $autoload_path;
+                break;
+            }
+        }
 
         // Inclui arquivos necessários
         $this->includes();
