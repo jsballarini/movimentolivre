@@ -878,7 +878,13 @@ class MOVLIV_Formularios {
                 <div class="form-terms">
                     <label>
                         <input type="checkbox" name="aceita_termos" required>
-                        <?php _e( 'Declaro estar ciente dos termos de responsabilidade do empréstimo *', 'movimento-livre' ); ?>
+                        <?php 
+                        printf(
+                            __( 'Declaro estar ciente dos %1$stermos de responsabilidade do empréstimo%2$s *', 'movimento-livre' ),
+                            '<a href="/termo-de-responsabilidade" target="_blank">',
+                            '</a>'
+                        );
+                        ?>
                     </label>
                 </div>
                 

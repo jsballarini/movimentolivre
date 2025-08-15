@@ -17,8 +17,26 @@
     --movliv-info-border: #c3e6fc;
     --movliv-info-text: #0073aa;
 }
-
 /* Suporte para tema escuro */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --movliv-bg-primary: #ffffff;
+        --movliv-bg-secondary: #f0f6fc;
+        --movliv-bg-terms: #fff3cd;
+        --movliv-text-primary: #333333;
+        --movliv-text-secondary: #666666;
+        --movliv-border-primary: #dddddd;
+        --movliv-border-secondary: #c3e6fc;
+        --movliv-border-terms: #ffeaa7;
+        --movliv-focus-color: #007cba;
+        --movliv-button-bg: #007cba;
+        --movliv-button-hover: #005a87;
+        --movliv-info-bg: #f0f6fc;
+        --movliv-info-border: #c3e6fc;
+        --movliv-info-text: #0073aa;
+    }
+}
+/* Suporte para tema escuro 
 @media (prefers-color-scheme: dark) {
     :root {
         --movliv-bg-primary: #2c3e50;
@@ -37,7 +55,7 @@
         --movliv-info-text: #3498db;
     }
 }
-
+*/
 .movliv-form-container {
     max-width: 800px;
     margin: 0 auto;
