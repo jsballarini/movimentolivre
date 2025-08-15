@@ -98,6 +98,151 @@ class MOVLIV_Reports {
             .movliv-filter-form .button {
                 height: 36px;
                 padding: 0 15px;
+            }
+            
+            /* Estilos para histórico da cadeira */
+            .movliv-cadeira-header {
+                background: #fff;
+                border: 1px solid #c3c4c7;
+                border-radius: 4px;
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            
+            .movliv-cadeira-header h2 {
+                margin: 0 0 10px 0;
+                color: #1d2327;
+            }
+            
+            .movliv-cadeira-header .description {
+                margin: 0;
+                color: #646970;
+            }
+            
+            .movliv-historico-container {
+                background: #fff;
+                border: 1px solid #c3c4c7;
+                border-radius: 4px;
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            
+            .movliv-timeline {
+                position: relative;
+                padding-left: 30px;
+            }
+            
+            .movliv-timeline::before {
+                content: "";
+                position: absolute;
+                left: 15px;
+                top: 0;
+                bottom: 0;
+                width: 2px;
+                background: #c3c4c7;
+            }
+            
+            .movliv-timeline-item {
+                position: relative;
+                margin-bottom: 20px;
+                padding: 15px;
+                background: #f8f9fa;
+                border-radius: 4px;
+                border-left: 4px solid #c3c4c7;
+            }
+            
+            .movliv-timeline-item::before {
+                content: "";
+                position: absolute;
+                left: -22px;
+                top: 20px;
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                background: #fff;
+                border: 2px solid #c3c4c7;
+            }
+            
+            .movliv-timeline-item.status-emprestimo {
+                border-left-color: #ffc107;
+                background: #fff8e1;
+            }
+            
+            .movliv-timeline-item.status-emprestimo::before {
+                border-color: #ffc107;
+            }
+            
+            .movliv-timeline-item.status-devolucao {
+                border-left-color: #17a2b8;
+                background: #e3f2fd;
+            }
+            
+            .movliv-timeline-item.status-devolucao::before {
+                border-color: #17a2b8;
+            }
+            
+            .movliv-timeline-item.status-avaliacao {
+                border-left-color: #6f42c1;
+                background: #f3e5f5;
+            }
+            
+            .movliv-timeline-item.status-avaliacao::before {
+                border-color: #6f42c1;
+            }
+            
+            .movliv-timeline-item.status-pronta {
+                border-left-color: #28a745;
+                background: #e8f5e8;
+            }
+            
+            .movliv-timeline-item.status-pronta::before {
+                border-color: #28a745;
+            }
+            
+            .movliv-timeline-item.status-em_manutencao {
+                border-left-color: #dc3545;
+                background: #f8d7da;
+            }
+            
+            .movliv-timeline-item.status-em_manutencao::before {
+                border-color: #dc3545;
+            }
+            
+            .movliv-timeline-date {
+                font-weight: 600;
+                color: #1d2327;
+                margin-bottom: 5px;
+            }
+            
+            .movliv-timeline-status {
+                font-weight: 600;
+                color: #1d2327;
+                margin-bottom: 5px;
+            }
+            
+            .movliv-timeline-user {
+                color: #646970;
+                font-style: italic;
+                margin-bottom: 5px;
+            }
+            
+            .movliv-timeline-notes {
+                background: #fff;
+                padding: 8px;
+                border-radius: 3px;
+                border-left: 3px solid #c3c4c7;
+                font-size: 13px;
+                color: #646970;
+            }
+            
+            .movliv-actions {
+                text-align: center;
+                padding: 20px;
+            }
+            
+            .movliv-actions .button {
+                margin: 0 10px;
+            }
                 margin-left: 10px;
             }
             
@@ -291,6 +436,7 @@ class MOVLIV_Reports {
                     <a href="#dashboard" class="nav-tab nav-tab-active"><?php _e( 'Dashboard', 'movimento-livre' ); ?></a>
                     <a href="#emprestimos" class="nav-tab"><?php _e( 'Empréstimos', 'movimento-livre' ); ?></a>
                     <a href="#cadeiras" class="nav-tab"><?php _e( 'Cadeiras', 'movimento-livre' ); ?></a>
+                    <a href="#cadeira-historico" class="nav-tab" id="cadeira-historico-tab" style="display:none;"><?php _e( 'Histórico da Cadeira', 'movimento-livre' ); ?></a>
                     <a href="#usuarios" class="nav-tab"><?php _e( 'Usuários', 'movimento-livre' ); ?></a>
                     <a href="#performance" class="nav-tab"><?php _e( 'Performance', 'movimento-livre' ); ?></a>
                 </nav>
@@ -308,6 +454,10 @@ class MOVLIV_Reports {
                 <?php $this->render_cadeiras_report(); ?>
             </div>
 
+            <div id="cadeira-historico" class="movliv-report-section" style="display:none;">
+                <?php $this->render_cadeira_historico_report(); ?>
+            </div>
+
             <div id="usuarios" class="movliv-report-section" style="display:none;">
                 <?php $this->render_usuarios_report(); ?>
             </div>
@@ -319,6 +469,20 @@ class MOVLIV_Reports {
 
         <script>
         jQuery(document).ready(function($) {
+            // Verifica se deve mostrar a aba de histórico da cadeira
+            var urlParams = new URLSearchParams(window.location.search);
+            var tab = urlParams.get('tab');
+            var productId = urlParams.get('product_id');
+            
+            if (tab === 'cadeira-historico' && productId) {
+                // Mostra a aba de histórico da cadeira
+                $('#cadeira-historico-tab').show();
+                $('.nav-tab').removeClass('nav-tab-active');
+                $('.movliv-report-section').hide();
+                $('#cadeira-historico-tab').addClass('nav-tab-active');
+                $('#cadeira-historico').show();
+            }
+            
             $('.nav-tab').click(function(e) {
                 e.preventDefault();
                 
@@ -892,7 +1056,7 @@ class MOVLIV_Reports {
             $html .= '<td><a href="' . admin_url( 'post.php?post=' . $result->ID . '&action=edit' ) . '">' . esc_html( $result->post_title ) . '</a></td>';
             $html .= '<td>' . $result->total_emprestimos . '</td>';
             $html .= '<td><span class="status-badge status-' . esc_attr( $result->status_atual ) . '">' . esc_html( $status_label ) . '</span></td>';
-            $html .= '<td><a href="' . admin_url( 'post.php?post=' . $result->ID . '&action=edit' ) . '" class="button button-small">' . __( 'Ver Detalhes', 'movimento-livre' ) . '</a></td>';
+            $html .= '<td><a href="' . admin_url( 'admin.php?page=movimento-livre-relatorios&tab=cadeira-historico&product_id=' . $result->ID ) . '" class="button button-small">' . __( 'Ver Detalhes', 'movimento-livre' ) . '</a></td>';
             $html .= '</tr>';
         }
         
@@ -1269,6 +1433,221 @@ class MOVLIV_Reports {
                 )
             )
         );
+    }
+
+    /**
+     * Renderiza relatório de histórico da cadeira
+     */
+    private function render_cadeira_historico_report() {
+        $product_id = isset( $_GET['product_id'] ) ? intval( $_GET['product_id'] ) : 0;
+        
+        if ( ! $product_id ) {
+            /* echo '<div class="error"><p>' . __( 'ID da cadeira não especificado.', 'movimento-livre' ) . '</p></div>'; */
+            return;
+        }
+        
+        $product = wc_get_product( $product_id );
+        if ( ! $product ) {
+            echo '<div class="error"><p>' . __( 'Cadeira não encontrada.', 'movimento-livre' ) . '</p></div>';
+            return;
+        }
+        
+        $historico = $this->get_cadeira_historico( $product_id );
+        
+        ?>
+        <div class="wrap">
+            <div class="movliv-cadeira-header">
+                <h2><?php echo esc_html( $product->get_name() ); ?> - <?php _e( 'Histórico Completo', 'movimento-livre' ); ?></h2>
+                <p class="description">
+                    <strong><?php _e( 'TAG/SKU:', 'movimento-livre' ); ?></strong> <?php echo esc_html( $product->get_sku() ); ?> | 
+                    <strong><?php _e( 'Status Atual:', 'movimento-livre' ); ?></strong> 
+                    <span class="status-badge status-<?php echo esc_attr( $product->get_meta( '_movliv_status' ) ?: 'pronta' ); ?>">
+                        <?php echo esc_html( MOVLIV_Status_Manager::$product_statuses[ $product->get_meta( '_movliv_status' ) ?: 'pronta' ] ?? 'Pronta' ); ?>
+                    </span>
+                </p>
+            </div>
+            
+            <div class="movliv-historico-container">
+                <h3><?php _e( 'Linha do Tempo da Cadeira', 'movimento-livre' ); ?></h3>
+                
+                <?php if ( empty( $historico ) ) : ?>
+                    <div class="notice notice-info">
+                        <p><?php _e( 'Nenhum histórico encontrado para esta cadeira.', 'movimento-livre' ); ?></p>
+                    </div>
+                <?php else : ?>
+                    <div class="movliv-timeline">
+                        <?php foreach ( $historico as $evento ) : ?>
+                            <div class="movliv-timeline-item status-<?php echo esc_attr( $evento['status'] ); ?>">
+                                <div class="movliv-timeline-date">
+                                    <?php echo esc_html( date( 'd/m/Y', strtotime( $evento['data'] ) ) ); ?>
+                                </div>
+                                <div class="movliv-timeline-content">
+                                    <div class="movliv-timeline-status">
+                                        <?php echo esc_html( $evento['status_label'] ); ?>
+                                    </div>
+                                    <div class="movliv-timeline-user">
+                                        <?php echo esc_html( $evento['usuario'] ); ?>
+                                    </div>
+                                    <?php if ( ! empty( $evento['observacoes'] ) ) : ?>
+                                        <div class="movliv-timeline-notes">
+                                            <?php echo esc_html( $evento['observacoes'] ); ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+            
+            <div class="movliv-actions">
+                <a href="<?php echo admin_url( 'admin.php?page=movimento-livre-relatorios&tab=cadeiras' ); ?>" class="button">
+                    <?php _e( '← Voltar para Lista de Cadeiras', 'movimento-livre' ); ?>
+                </a>
+                <a href="<?php echo admin_url( 'post.php?post=' . $product_id . '&action=edit' ); ?>" class="button button-primary">
+                    <?php _e( 'Editar Cadeira', 'movimento-livre' ); ?>
+                </a>
+            </div>
+        </div>
+        <?php
+    }
+
+    /**
+     * Obtém histórico completo de uma cadeira
+     */
+    private function get_cadeira_historico( $product_id ) {
+        global $wpdb;
+        
+        $historico = array();
+        
+        // 1. Busca empréstimos através dos itens do pedido
+        $emprestimos = $wpdb->get_results( $wpdb->prepare( "
+            SELECT 
+                p.ID as order_id,
+                p.post_date as data,
+                p.post_status as status,
+                CONCAT(COALESCE(um_fname.meta_value, ''), ' ', COALESCE(um_lname.meta_value, '')) as usuario,
+                pm_observacoes.meta_value as observacoes,
+                pm_padrinho.meta_value as padrinho
+            FROM {$wpdb->posts} p
+            INNER JOIN {$wpdb->order_items} oi ON p.ID = oi.order_id
+            INNER JOIN {$wpdb->users} u ON p.post_author = u.ID
+            LEFT JOIN {$wpdb->usermeta} um_fname ON u.ID = um_fname.user_id AND um_fname.meta_key = 'billing_first_name'
+            LEFT JOIN {$wpdb->usermeta} um_lname ON u.ID = um_lname.user_id AND um_lname.meta_key = 'billing_last_name'
+            LEFT JOIN {$wpdb->postmeta} pm_observacoes ON p.ID = pm_observacoes.post_id AND pm_observacoes.meta_key = '_movliv_emprestimo_observacoes'
+            LEFT JOIN {$wpdb->postmeta} pm_padrinho ON p.ID = pm_padrinho.post_id AND pm_padrinho.meta_key = '_movliv_padrinho_nome'
+            WHERE oi.product_id = %d
+            AND p.post_status IN ('processing', 'completed')
+            ORDER BY p.post_date DESC
+        ", $product_id ) );
+        
+        foreach ( $emprestimos as $emprestimo ) {
+            $status_label = $emprestimo->status === 'processing' ? 'Empréstimo' : 'Devolução';
+            $usuario_info = trim( $emprestimo->usuario );
+            if ( ! empty( $emprestimo->padrinho ) ) {
+                $usuario_info .= ' (Padrinho: ' . trim( $emprestimo->padrinho ) . ')';
+            }
+            
+            $historico[] = array(
+                'data' => $emprestimo->data,
+                'status' => $emprestimo->status === 'processing' ? 'emprestimo' : 'devolucao',
+                'status_label' => $status_label,
+                'usuario' => $usuario_info ?: 'Usuário não identificado',
+                'observacoes' => $emprestimo->observacoes
+            );
+        }
+        
+        // 2. Busca mudanças de status da cadeira e datas específicas
+        $mudancas_status = array();
+        
+        // Busca por datas específicas salvas como meta do produto
+        $data_emprestimo = get_post_meta( $product_id, '_data_emprestimo', true );
+        $data_devolucao = get_post_meta( $product_id, '_data_devolucao', true );
+        $data_manutencao = get_post_meta( $product_id, '_data_manutencao', true );
+        
+        if ( $data_emprestimo ) {
+            $mudancas_status[] = (object) array(
+                'status' => 'emprestado',
+                'data' => $data_emprestimo,
+                'usuario' => 'Sistema'
+            );
+        }
+        
+        if ( $data_devolucao ) {
+            $mudancas_status[] = (object) array(
+                'status' => 'em_avaliacao',
+                'data' => $data_devolucao,
+                'usuario' => 'Sistema'
+            );
+        }
+        
+        if ( $data_manutencao ) {
+            $mudancas_status[] = (object) array(
+                'status' => 'em_manutencao',
+                'data' => $data_manutencao,
+                'usuario' => 'Sistema'
+            );
+        }
+        
+        foreach ( $mudancas_status as $mudanca ) {
+            $status_label = MOVLIV_Status_Manager::$product_statuses[ $mudanca->status ] ?? ucfirst( $mudanca->status );
+            $historico[] = array(
+                'data' => $mudanca->data,
+                'status' => $mudanca->status,
+                'status_label' => $status_label,
+                'usuario' => $mudanca->usuario ?: 'Sistema',
+                'observacoes' => ''
+            );
+        }
+        
+        // 3. Busca avaliações técnicas
+        $avaliacoes = get_post_meta( $product_id, '_avaliacoes_produto', true );
+        if ( is_array( $avaliacoes ) ) {
+            foreach ( $avaliacoes as $avaliacao ) {
+                $status_label = 'Avaliação Técnica';
+                if ( ! empty( $avaliacao['resultado'] ) ) {
+                    $status_label .= ' - ' . $avaliacao['resultado'];
+                }
+                
+                $observacoes = $avaliacao['observacoes'];
+                if ( ! empty( $avaliacao['resultado'] ) ) {
+                    $observacoes = 'Resultado: ' . $avaliacao['resultado'] . ( ! empty( $observacoes ) ? ' - ' . $observacoes : '' );
+                }
+                
+                $historico[] = array(
+                    'data' => $avaliacao['data'],
+                    'status' => 'avaliacao',
+                    'status_label' => $status_label,
+                    'usuario' => $avaliacao['avaliador'],
+                    'observacoes' => $observacoes
+                );
+            }
+        }
+        
+        // 4. Busca por pedidos específicos que podem ter informações adicionais
+        $pedido_emprestimo = get_post_meta( $product_id, '_emprestado_pedido_id', true );
+        if ( $pedido_emprestimo ) {
+            $order = wc_get_order( $pedido_emprestimo );
+            if ( $order ) {
+                $data_emprestimo = get_post_meta( $product_id, '_data_emprestimo', true );
+                if ( $data_emprestimo ) {
+                    $historico[] = array(
+                        'data' => $data_emprestimo,
+                        'status' => 'emprestado',
+                        'status_label' => 'Emprestado',
+                        'usuario' => 'Sistema',
+                        'observacoes' => 'Pedido #' . $pedido_emprestimo
+                    );
+                }
+            }
+        }
+        
+        // 5. Ordena por data (mais recente primeiro)
+        usort( $historico, function( $a, $b ) {
+            return strtotime( $b['data'] ) - strtotime( $a['data'] );
+        } );
+        
+        return $historico;
     }
 
 

@@ -923,6 +923,9 @@ class MOVLIV_Formularios {
         // ✅ CORREÇÃO: Usa função helper para buscar CPF correto
         $cpf = $this->get_user_cpf_from_order( $order_id );
         
+        // ✅ NOVO: Busca dados do solicitante do empréstimo para pré-preenchimento
+        $nome_solicitante = $order->get_billing_first_name() . ' ' . $order->get_billing_last_name();
+        
         ob_start();
         ?>
         <div class="movliv-form-container">
@@ -935,7 +938,7 @@ class MOVLIV_Formularios {
                 
                 <div class="form-row">
                     <label for="nome"><?php _e( 'Nome Completo *', 'movimento-livre' ); ?></label>
-                    <input type="text" id="nome" name="nome" required>
+                    <input type="text" id="nome" name="nome" value="<?php echo esc_attr( $nome_solicitante ); ?>" required>
                 </div>
                 
                 <div class="form-row">
@@ -960,6 +963,15 @@ class MOVLIV_Formularios {
                 <div class="form-info">
                     <h4><?php _e( 'Informações do Empréstimo:', 'movimento-livre' ); ?></h4>
                     <p><strong><?php _e( 'Pedido:', 'movimento-livre' ); ?></strong> #<?php echo $order->get_id(); ?></p>
+                    <p><strong><?php _e( 'Solicitante:', 'movimento-livre' ); ?></strong> <?php echo esc_html( $nome_solicitante ); ?></p>
+                    <p><strong><?php _e( 'CPF:', 'movimento-livre' ); ?></strong> 
+                        <?php 
+                        if ( $cpf ) {
+                            $cpf_validator = MOVLIV_CPF_Validator::getInstance();
+                            echo $cpf_validator->format_cpf( $cpf );
+                        }
+                        ?>
+                    </p>
                     <p><strong><?php _e( 'Data da Devolução:', 'movimento-livre' ); ?></strong> <?php echo date( 'd/m/Y' ); ?></p>
                     <?php foreach ( $order->get_items() as $item ) : 
                         $product = $item->get_product(); ?>
