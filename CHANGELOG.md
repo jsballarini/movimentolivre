@@ -65,7 +65,7 @@
 
 ---
 
-## [0.0.5] - 2025-01-13
+## [0.0.5] - 2025-08-13
 
 ### Corrigido
 - Geração de PDFs falhando por ausência de autoload do Composer (Dompdf)
@@ -86,7 +86,7 @@
 
 ---
 
-## [0.0.4] - 2024-12-19
+## [0.0.4] - 2025-08-10
 
 ### Corrigido
 - Sistema de emails não funcionando nos formulários de empréstimo e devolução
@@ -105,7 +105,7 @@
 - `debug-email-test.php` - Script de debug avançado
 - `SOLUCAO_EMAILS_FORMULARIO.md` - Documentação da solução
 
-## [0.0.3] - 2024-12-19
+## [0.0.3] - 2025-08-01
 
 ### Corrigido
 - **Problema Crítico**: Dados do Padrinho e links de PDF não aparecendo no admin e área do usuário
@@ -142,7 +142,7 @@
 - `assets/js/forms.js`
 - `includes/class-cpf-validator.php`
 
-## [0.0.2] - 2024-12-19
+## [0.0.2] - 2025-08-02
 
 ### Corrigido
 - **Problema Crítico**: Formulários AJAX não funcionando
@@ -175,7 +175,7 @@
 - `STATUS_DESENVOLVIMENTO.md`
 - `TODO.md`
 
-## [0.0.1] - 2024-12-19
+## [0.0.1] - 2025-07-15
 
 ### Adicionado
 - Sistema base do plugin Movimento Livre
