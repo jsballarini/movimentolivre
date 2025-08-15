@@ -1,6 +1,6 @@
 # 📋 CHANGELOG - Movimento Livre
 
-## [0.0.7] - 2025-10-14
+## [0.0.7] - 2025-10-15
 
 ### 🎨 **SUPORTE A TEMAS ESCUROS**
 - **Compatibilidade com Tema Escuro**: Implementado sistema automático de detecção e aplicação de temas escuros
