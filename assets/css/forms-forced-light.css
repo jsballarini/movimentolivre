@@ -1,0 +1,279 @@
+/**
+ * CSS para Forçar Cores Claras nos Formulários - Movimento Livre
+ * Sobrescreve qualquer tema escuro do sistema
+ * @package MovimentoLivre
+ * @since 0.0.1
+ */
+
+/* ==================== FORÇAR CORES CLARAS - SOBRESCREVER TEMAS ESCUROS ==================== */
+
+/* Container principal dos formulários */
+.movliv-form-container,
+.movliv-form-container * {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+}
+
+/* Formulários em geral */
+.movliv-form,
+.movliv-form *,
+.movliv-form-group,
+.movliv-form-group * {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+}
+
+/* Campos de entrada */
+.movliv-form input[type="text"],
+.movliv-form input[type="email"],
+.movliv-form input[type="tel"],
+.movliv-form input[type="date"],
+.movliv-form input[type="password"],
+.movliv-form input[type="number"],
+.movliv-form input[type="search"],
+.movliv-form input[type="url"],
+.movliv-form select,
+.movliv-form textarea,
+.movliv-form-group input[type="text"],
+.movliv-form-group input[type="email"],
+.movliv-form-group input[type="tel"],
+.movliv-form-group input[type="date"],
+.movliv-form-group input[type="password"],
+.movliv-form-group input[type="number"],
+.movliv-form-group input[type="search"],
+.movliv-form-group input[type="url"],
+.movliv-form-group select,
+.movliv-form-group textarea {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-color: #dddddd !important;
+}
+
+/* Estados de foco */
+.movliv-form input:focus,
+.movliv-form select:focus,
+.movliv-form textarea:focus,
+.movliv-form-group input:focus,
+.movliv-form-group select:focus,
+.movliv-form-group textarea:focus {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-color: #007cba !important;
+    outline-color: #007cba !important;
+}
+
+/* Labels e textos */
+.movliv-form label,
+.movliv-form span,
+.movliv-form p,
+.movliv-form div,
+.movliv-form h1,
+.movliv-form h2,
+.movliv-form h3,
+.movliv-form h4,
+.movliv-form h5,
+.movliv-form h6,
+.movliv-form-group label,
+.movliv-form-group span,
+.movliv-form-group p,
+.movliv-form-group div,
+.movliv-form-group h1,
+.movliv-form-group h2,
+.movliv-form-group h3,
+.movliv-form-group h4,
+.movliv-form-group h5,
+.movliv-form-group h6 {
+    color: #000000 !important;
+}
+
+/* Seções especiais */
+.movliv-form .form-section {
+    background-color: #f9f9f9 !important;
+    color: #000000 !important;
+    border-color: #dddddd !important;
+}
+
+.movliv-form .form-section h4 {
+    color: #333333 !important;
+}
+
+.movliv-form .form-description {
+    color: #666666 !important;
+}
+
+/* Informações do formulário */
+.movliv-form .form-info {
+    background-color: #f0f6fc !important;
+    color: #000000 !important;
+    border-color: #c3e6fc !important;
+}
+
+.movliv-form .form-info h4 {
+    color: #0073aa !important;
+}
+
+.movliv-form .form-info p,
+.movliv-form .form-info ul,
+.movliv-form .form-info li {
+    color: #000000 !important;
+}
+
+/* Termos e condições */
+.movliv-form .form-terms {
+    background-color: #fff3cd !important;
+    color: #000000 !important;
+    border-color: #ffeaa7 !important;
+}
+
+/* Checkboxes e radio buttons */
+.movliv-form input[type="checkbox"],
+.movliv-form input[type="radio"] {
+    background-color: #ffffff !important;
+    border-color: #dddddd !important;
+}
+
+.movliv-form input[type="checkbox"]:checked,
+.movliv-form input[type="radio"]:checked {
+    background-color: #007cba !important;
+    border-color: #007cba !important;
+}
+
+/* Botões */
+.movliv-form .button-primary,
+.movliv-form .btn-primary,
+.movliv-form-group .button-primary,
+.movliv-form-group .btn-primary {
+    background-color: #007cba !important;
+    color: #ffffff !important;
+    border-color: #007cba !important;
+}
+
+.movliv-form .button-primary:hover,
+.movliv-form .btn-primary:hover,
+.movliv-form-group .button-primary:hover,
+.movliv-form-group .btn-primary:hover {
+    background-color: #005a87 !important;
+    color: #ffffff !important;
+}
+
+/* Placeholders */
+.movliv-form input::placeholder,
+.movliv-form textarea::placeholder,
+.movliv-form-group input::placeholder,
+.movliv-form-group textarea::placeholder {
+    color: #666666 !important;
+}
+
+/* Links dentro dos formulários */
+.movliv-form a,
+.movliv-form-group a {
+    color: #007cba !important;
+}
+
+.movliv-form a:hover,
+.movliv-form-group a:hover {
+    color: #005a87 !important;
+}
+
+/* Listas */
+.movliv-form ul,
+.movliv-form ol,
+.movliv-form-group ul,
+.movliv-form-group ol {
+    background-color: transparent !important;
+    color: #000000 !important;
+}
+
+.movliv-form li,
+.movliv-form-group li {
+    background-color: transparent !important;
+    color: #000000 !important;
+}
+
+/* Tabelas dentro de formulários */
+.movliv-form table,
+.movliv-form-group table {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+}
+
+.movliv-form th,
+.movliv-form td,
+.movliv-form-group th,
+.movliv-form-group td {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-color: #dddddd !important;
+}
+
+/* Mensagens de erro e sucesso */
+.movliv-form .error,
+.movliv-form .success,
+.movliv-form .warning,
+.movliv-form .info,
+.movliv-form-group .error,
+.movliv-form-group .success,
+.movliv-form-group .warning,
+.movliv-form-group .info {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    border-color: #dddddd !important;
+}
+
+/* Sobrescrever especificamente para temas escuros */
+@media (prefers-color-scheme: dark) {
+    .movliv-form-container,
+    .movliv-form-container *,
+    .movliv-form,
+    .movliv-form *,
+    .movliv-form-group,
+    .movliv-form-group * {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+    }
+    
+    .movliv-form input,
+    .movliv-form select,
+    .movliv-form textarea,
+    .movliv-form-group input,
+    .movliv-form-group select,
+    .movliv-form-group textarea {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+        border-color: #dddddd !important;
+    }
+}
+
+/* Sobrescrever para qualquer tema escuro do WordPress */
+body.dark-theme .movliv-form-container,
+body.dark-theme .movliv-form-container *,
+body.dark-theme .movliv-form,
+body.dark-theme .movliv-form *,
+body.dark-theme .movliv-form-group,
+body.dark-theme .movliv-form-group *,
+.wp-dark-mode .movliv-form-container,
+.wp-dark-mode .movliv-form-container *,
+.wp-dark-mode .movliv-form,
+.wp-dark-mode .movliv-form *,
+.wp-dark-mode .movliv-form-group,
+.wp-dark-mode .movliv-form-group * {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+}
+
+/* Sobrescrever para temas escuros específicos */
+.theme-dark .movliv-form-container,
+.theme-dark .movliv-form-container *,
+.theme-dark .movliv-form,
+.theme-dark .movliv-form *,
+.theme-dark .movliv-form-group,
+.theme-dark .movliv-form-group *,
+.dark-mode .movliv-form-container,
+.dark-mode .movliv-form-container *,
+.dark-mode .movliv-form,
+.dark-mode .movliv-form *,
+.dark-mode .movliv-form-group,
+.dark-mode .movliv-form-group * {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+}

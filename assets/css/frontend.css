@@ -18,7 +18,7 @@
 .movliv-form h2 {
     text-align: center;
     margin-bottom: 25px;
-    color: #333;
+    color: #333 !important;
     font-size: 24px;
     font-weight: 600;
 }
@@ -31,7 +31,7 @@
     display: block;
     margin-bottom: 5px;
     font-weight: 600;
-    color: #333;
+    color: #333 !important;
 }
 
 .movliv-form-group label.required::after {
@@ -48,6 +48,8 @@
     border-radius: 4px;
     font-size: 14px;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background: #fff !important;
+    color: #000 !important;
 }
 
 .movliv-form-group input:focus,
@@ -56,6 +58,8 @@
     outline: none;
     border-color: #3498db;
     box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    background: #fff !important;
+    color: #000 !important;
 }
 
 .movliv-form-group textarea {
@@ -65,7 +69,7 @@
 
 .movliv-form-group .form-help {
     font-size: 12px;
-    color: #666;
+    color: #666 !important;
     margin-top: 5px;
 }
 
@@ -495,30 +499,104 @@
     outline-offset: 2px;
 }
 
+/* ==================== FORÇAR CORES CLARAS - SOBRESCREVER TEMAS ESCUROS ==================== */
+/* Sobrescreve qualquer tema escuro do sistema para formulários */
+.movliv-form,
+.movliv-form *,
+.movliv-form-group,
+.movliv-form-group * {
+    background-color: #fff !important;
+    color: #000 !important;
+}
+
+/* Campos de formulário específicos */
+.movliv-form input,
+.movliv-form select,
+.movliv-form textarea,
+.movliv-form-group input,
+.movliv-form-group select,
+.movliv-form-group textarea {
+    background-color: #fff !important;
+    color: #000 !important;
+    border-color: #ddd !important;
+}
+
+/* Labels e textos */
+.movliv-form label,
+.movliv-form span,
+.movliv-form p,
+.movliv-form div,
+.movliv-form-group label,
+.movliv-form-group span,
+.movliv-form-group p,
+.movliv-form-group div {
+    color: #000 !important;
+}
+
+/* Seções especiais */
+.movliv-form .form-section {
+    background-color: #f9f9f9 !important;
+    color: #000 !important;
+}
+
+.movliv-form .form-section h4 {
+    color: #333 !important;
+}
+
+.movliv-form .form-description {
+    color: #666 !important;
+}
+
+/* Informações do formulário */
+.movliv-form .form-info {
+    background-color: #f0f6fc !important;
+    color: #000 !important;
+}
+
+.movliv-form .form-info h4 {
+    color: #0073aa !important;
+}
+
+.movliv-form .form-info p,
+.movliv-form .form-info ul,
+.movliv-form .form-info li {
+    color: #000 !important;
+}
+
+/* Termos e condições */
+.movliv-form .form-terms {
+    background-color: #fff3cd !important;
+    color: #000 !important;
+}
+
 /* ==================== DARK MODE SUPPORT ==================== */
 @media (prefers-color-scheme: dark) {
-    .movliv-form {
-        background: #2c3e50;
-        border-color: #34495e;
-        color: #ecf0f1;
+    /* FORÇAR CORES CLARAS mesmo em modo escuro */
+    .movliv-form,
+    .movliv-form *,
+    .movliv-form-group,
+    .movliv-form-group * {
+        background: #fff !important;
+        color: #000 !important;
     }
     
-    .movliv-form h2 {
-        color: #ecf0f1;
-    }
-    
+    .movliv-form h2,
     .movliv-form-group label {
-        color: #ecf0f1;
+        color: #000 !important;
     }
     
+    .movliv-form input,
+    .movliv-form select,
+    .movliv-form textarea,
     .movliv-form-group input,
     .movliv-form-group select,
     .movliv-form-group textarea {
-        background: #34495e;
-        border-color: #4a5d6b;
-        color: #ecf0f1;
+        background: #fff !important;
+        color: #000 !important;
+        border-color: #ddd !important;
     }
     
+    /* Manter cores específicas para outros elementos */
     .movliv-cadeira-item {
         background: #2c3e50;
         border-color: #34495e;
