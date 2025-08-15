@@ -3,7 +3,7 @@
  * Plugin Name: Movimento Livre - Sistema de Empréstimos de Cadeiras de Rodas
  * Plugin URI: https://github.com/jsballarini
  * Description: Sistema completo para gerenciar empréstimos solidários de cadeiras de rodas, integrado ao WooCommerce.
- * Version: 0.0.6
+ * Version: 0.0.7
  * Author: Juliano Ballarini
  * Author URI: https://github.com/jsballarini
  * Text Domain: movimento-livre
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define constantes do plugin
-define( 'MOVLIV_VERSION', '0.0.6' );
+define( 'MOVLIV_VERSION', '0.0.7' );
 define( 'MOVLIV_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'MOVLIV_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 define( 'MOVLIV_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );

@@ -1,5 +1,33 @@
 # 📋 CHANGELOG - Movimento Livre
 
+## [0.0.7] - 2024-12-19
+
+### 🎨 **SUPORTE A TEMAS ESCUROS**
+- **Compatibilidade com Tema Escuro**: Implementado sistema automático de detecção e aplicação de temas escuros
+- **Variáveis CSS**: Sistema de variáveis CSS para centralizar e padronizar cores em todo o plugin
+- **Detecção Automática**: Uso de `prefers-color-scheme: dark` para detectar preferências do usuário
+- **Acessibilidade Melhorada**: Texto sempre legível independente do tema do sistema
+
+### 🔧 **ARQUIVOS CSS ATUALIZADOS**
+- **`assets/css/forms.css`**: Sistema completo de variáveis CSS com suporte a tema escuro
+- **`assets/css/frontend.css`**: Padronização de cores e remoção de duplicações
+- **Variáveis CSS**: 13 variáveis principais para cores de fundo, texto, bordas e botões
+- **Fallbacks**: Suporte a navegadores que não suportam variáveis CSS
+
+### 📱 **RESPONSIVIDADE E COMPATIBILIDADE**
+- **Mobile First**: Tema escuro funciona perfeitamente em dispositivos móveis
+- **Navegadores**: Compatível com Chrome 49+, Firefox 31+, Safari 9.1+, Edge 79+
+- **Transições Suaves**: Mudanças de tema aplicadas instantaneamente
+- **Sem JavaScript**: Funcionamento puramente via CSS
+
+### 🎯 **ELEMENTOS AFETADOS**
+- ✅ **Formulários**: Empréstimo, devolução e avaliação
+- ✅ **Componentes**: Cards de cadeiras, dashboard, histórico
+- ✅ **Interface**: Filtros, busca, alertas e mensagens
+- ✅ **Acessibilidade**: Contraste adequado em ambos os temas
+
+---
+
 ## [0.0.6] - 2025-01-13
 
 ### 🔧 **CORREÇÕES CRÍTICAS**

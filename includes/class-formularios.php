@@ -129,35 +129,10 @@ class MOVLIV_Formularios {
                 MOVLIV_VERSION 
             );
             
-            // CSS para forçar cores claras nos formulários
-            wp_enqueue_style( 
-                'movliv-forms-forced-light', 
-                MOVLIV_PLUGIN_URL . 'assets/css/forms-forced-light.css', 
-                array( 'movliv-forms', 'movliv-frontend' ), 
-                MOVLIV_VERSION 
-            );
-            
-            // CSS para sobrescrever estilos inline e de temas
-            wp_enqueue_style( 
-                'movliv-forms-override', 
-                MOVLIV_PLUGIN_URL . 'assets/css/forms-override.css', 
-                array( 'movliv-forms', 'movliv-frontend', 'movliv-forms-forced-light' ), 
-                MOVLIV_VERSION 
-            );
-            
             wp_enqueue_script( 
                 'movliv-frontend', 
                 MOVLIV_PLUGIN_URL . 'assets/js/frontend.js', 
                 array( 'jquery' ), 
-                MOVLIV_VERSION, 
-                true 
-            );
-            
-            // JavaScript para forçar cores claras nos formulários
-            wp_enqueue_script( 
-                'movliv-forms-color-enforcer', 
-                MOVLIV_PLUGIN_URL . 'assets/js/forms-color-enforcer.js', 
-                array( 'jquery', 'movliv-forms', 'movliv-frontend' ), 
                 MOVLIV_VERSION, 
                 true 
             );

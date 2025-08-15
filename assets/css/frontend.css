@@ -4,21 +4,22 @@
  * @since 0.0.1
  */
 
-/* ==================== FORMULÁRIOS GERAIS ==================== 
+/* ==================== FORMULÁRIOS GERAIS ==================== */
 .movliv-form {
     max-width: 600px;
     margin: 20px auto;
     padding: 30px;
-    background: #fff;
-    border: 1px solid #ddd;
+    background: var(--movliv-bg-primary, #ffffff);
+    border: 1px solid var(--movliv-border-primary, #dddddd);
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0,0,0,.1);
+    color: var(--movliv-text-primary, #333333);
 }
-*/
+
 .movliv-form h2 {
     text-align: center;
     margin-bottom: 25px;
-    color: #333 !important;
+    color: var(--movliv-text-primary, #333333);
     font-size: 24px;
     font-weight: 600;
 }
@@ -31,7 +32,7 @@
     display: block;
     margin-bottom: 5px;
     font-weight: 600;
-    color: #333 !important;
+    color: var(--movliv-text-primary, #333333);
 }
 
 .movliv-form-group label.required::after {
@@ -44,22 +45,20 @@
 .movliv-form-group textarea {
     width: 100%;
     padding: 12px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--movliv-border-primary, #dddddd);
     border-radius: 4px;
     font-size: 14px;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    background: #fff !important;
-    color: #000 !important;
+    background: var(--movliv-bg-primary, #ffffff);
+    color: var(--movliv-text-primary, #333333);
 }
 
 .movliv-form-group input:focus,
 .movliv-form-group select:focus,
 .movliv-form-group textarea:focus {
     outline: none;
-    border-color: #3498db;
+    border-color: var(--movliv-focus-color, #3498db);
     box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-    background: #fff !important;
-    color: #000 !important;
 }
 
 .movliv-form-group textarea {
@@ -69,7 +68,7 @@
 
 .movliv-form-group .form-help {
     font-size: 12px;
-    color: #666 !important;
+    color: var(--movliv-text-secondary, #666666);
     margin-top: 5px;
 }
 
@@ -77,7 +76,7 @@
 .movliv-btn {
     display: inline-block;
     padding: 12px 24px;
-    background: #3498db;
+    background: var(--movliv-button-bg, #3498db);
     color: white;
     border: none;
     border-radius: 4px;
@@ -90,7 +89,7 @@
 }
 
 .movliv-btn:hover {
-    background: #2980b9;
+    background: var(--movliv-button-hover, #2980b9);
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(0,0,0,.2);
 }
@@ -100,7 +99,7 @@
 }
 
 .movliv-btn.btn-primary {
-    background: #3498db;
+    background: var(--movliv-button-bg, #3498db);
 }
 
 .movliv-btn.btn-success {
@@ -173,12 +172,13 @@
 }
 
 .movliv-cadeira-item {
-    background: #fff;
-    border: 1px solid #ddd;
+    background: var(--movliv-bg-primary, #ffffff);
+    border: 1px solid var(--movliv-border-primary, #dddddd);
     border-radius: 8px;
     padding: 20px;
     box-shadow: 0 2px 5px rgba(0,0,0,.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: var(--movliv-text-primary, #333333);
 }
 
 .movliv-cadeira-item:hover {
@@ -188,7 +188,7 @@
 
 .movliv-cadeira-item h3 {
     margin: 0 0 10px 0;
-    color: #333;
+    color: var(--movliv-text-primary, #333333);
     font-size: 18px;
 }
 
@@ -240,17 +240,18 @@
 }
 
 .movliv-stat-card {
-    background: #fff;
-    border: 1px solid #ddd;
+    background: var(--movliv-bg-primary, #ffffff);
+    border: 1px solid var(--movliv-border-primary, #dddddd);
     border-radius: 8px;
     padding: 20px;
     text-align: center;
     box-shadow: 0 2px 5px rgba(0,0,0,.1);
+    color: var(--movliv-text-primary, #333333);
 }
 
 .movliv-stat-card h4 {
     margin: 0 0 10px 0;
-    color: #666;
+    color: var(--movliv-text-secondary, #666666);
     font-size: 14px;
     text-transform: uppercase;
 }
@@ -258,34 +259,36 @@
 .movliv-stat-card .number {
     font-size: 24px;
     font-weight: bold;
-    color: #3498db;
+    color: var(--movliv-focus-color, #3498db);
 }
 
 /* Histórico de Empréstimos */
 .movliv-historico {
-    background: #fff;
-    border: 1px solid #ddd;
+    background: var(--movliv-bg-primary, #ffffff);
+    border: 1px solid var(--movliv-border-primary, #dddddd);
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 2px 5px rgba(0,0,0,.1);
+    color: var(--movliv-text-primary, #333333);
 }
 
 .movliv-historico h3 {
     margin: 0;
     padding: 20px;
-    background: #f8f9fa;
-    border-bottom: 1px solid #ddd;
-    color: #333;
+    background: var(--movliv-bg-secondary, #f8f9fa);
+    border-bottom: 1px solid var(--movliv-border-primary, #dddddd);
+    color: var(--movliv-text-primary, #333333);
 }
 
 .movliv-historico-item {
     padding: 20px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--movliv-border-primary, #eeeeee);
     transition: background-color 0.3s ease;
+    color: var(--movliv-text-primary, #333333);
 }
 
 .movliv-historico-item:hover {
-    background: #f8f9fa;
+    background: var(--movliv-bg-secondary, #f8f9fa);
 }
 
 .movliv-historico-item:last-child {
@@ -301,7 +304,7 @@
 
 .movliv-historico-item .item-title {
     font-weight: 600;
-    color: #333;
+    color: var(--movliv-text-primary, #333333);
 }
 
 .movliv-historico-item .item-status {
@@ -313,7 +316,7 @@
 }
 
 .movliv-historico-item .item-details {
-    color: #666;
+    color: var(--movliv-text-secondary, #666666);
     font-size: 14px;
 }
 
@@ -340,15 +343,16 @@
 
 /* Filtros */
 .movliv-filtros {
-    background: #f8f9fa;
+    background: var(--movliv-bg-secondary, #f8f9fa);
     padding: 20px;
     border-radius: 8px;
     margin-bottom: 20px;
+    color: var(--movliv-text-primary, #333333);
 }
 
 .movliv-filtros h4 {
     margin: 0 0 15px 0;
-    color: #333;
+    color: var(--movliv-text-primary, #333333);
 }
 
 .movliv-filtros-row {
@@ -360,20 +364,23 @@
 
 .movliv-filtros-row label {
     font-weight: 600;
-    color: #333;
+    color: var(--movliv-text-primary, #333333);
     margin-right: 5px;
 }
 
 .movliv-filtros-row select {
     padding: 8px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--movliv-border-primary, #dddddd);
     border-radius: 4px;
+    background: var(--movliv-bg-primary, #ffffff);
+    color: var(--movliv-text-primary, #333333);
 }
 
 /* ==================== LOADING E ESTADOS ==================== */
 .movliv-loading {
     text-align: center;
     padding: 40px;
+    color: var(--movliv-text-primary, #333333);
 }
 
 .movliv-loading-spinner {
@@ -381,7 +388,7 @@
     width: 40px;
     height: 40px;
     border: 4px solid #f3f3f3;
-    border-top: 4px solid #3498db;
+    border-top: 4px solid var(--movliv-focus-color, #3498db);
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-bottom: 15px;
@@ -395,12 +402,12 @@
 .movliv-empty-state {
     text-align: center;
     padding: 60px 20px;
-    color: #666;
+    color: var(--movliv-text-secondary, #666666);
 }
 
 .movliv-empty-state h3 {
     margin-bottom: 10px;
-    color: #333;
+    color: var(--movliv-text-primary, #333333);
 }
 
 /* ==================== RESPONSIVIDADE ==================== */
@@ -495,179 +502,73 @@
 .movliv-form-group input:focus,
 .movliv-form-group select:focus,
 .movliv-form-group textarea:focus {
-    outline: 2px solid #3498db;
+    outline: 2px solid var(--movliv-focus-color, #3498db);
     outline-offset: 2px;
-}
-
-/* ==================== FORÇAR CORES CLARAS - SOBRESCREVER TEMAS ESCUROS ==================== */
-/* Sobrescreve qualquer tema escuro do sistema para formulários */
-.movliv-form,
-.movliv-form *,
-.movliv-form-group,
-.movliv-form-group * {
-    background-color: #fff !important;
-    color: #000 !important;
-}
-
-/* Campos de formulário específicos */
-.movliv-form input,
-.movliv-form select,
-.movliv-form textarea,
-.movliv-form-group input,
-.movliv-form-group select,
-.movliv-form-group textarea {
-    background-color: #fff !important;
-    color: #000 !important;
-    border-color: #ddd !important;
-}
-
-/* Labels e textos */
-.movliv-form label,
-.movliv-form span,
-.movliv-form p,
-.movliv-form div,
-.movliv-form-group label,
-.movliv-form-group span,
-.movliv-form-group p,
-.movliv-form-group div {
-    color: #000 !important;
-}
-
-/* Seções especiais */
-.movliv-form .form-section {
-    background-color: #f9f9f9 !important;
-    color: #000 !important;
-}
-
-.movliv-form .form-section h4 {
-    color: #333 !important;
-}
-
-.movliv-form .form-description {
-    color: #666 !important;
-}
-
-/* Informações do formulário */
-.movliv-form .form-info {
-    background-color: #f0f6fc !important;
-    color: #000 !important;
-}
-
-.movliv-form .form-info h4 {
-    color: #0073aa !important;
-}
-
-.movliv-form .form-info p,
-.movliv-form .form-info ul,
-.movliv-form .form-info li {
-    color: #000 !important;
-}
-
-/* Termos e condições */
-.movliv-form .form-terms {
-    background-color: #fff3cd !important;
-    color: #000 !important;
 }
 
 /* ==================== DARK MODE SUPPORT ==================== */
 @media (prefers-color-scheme: dark) {
-    /* FORÇAR CORES CLARAS mesmo em modo escuro */
-    .movliv-form,
-    .movliv-form *,
-    .movliv-form-group,
-    .movliv-form-group * {
-        background: #fff !important;
-        color: #000 !important;
+    .movliv-form {
+        background: var(--movliv-bg-primary, #2c3e50);
+        border-color: var(--movliv-border-primary, #34495e);
+        color: var(--movliv-text-primary, #ecf0f1);
     }
     
-    .movliv-form h2,
+    .movliv-form h2 {
+        color: var(--movliv-text-primary, #ecf0f1);
+    }
+    
     .movliv-form-group label {
-        color: #000 !important;
+        color: var(--movliv-text-primary, #ecf0f1);
     }
     
-    .movliv-form input,
-    .movliv-form select,
-    .movliv-form textarea,
     .movliv-form-group input,
     .movliv-form-group select,
     .movliv-form-group textarea {
-        background: #fff !important;
-        color: #000 !important;
-        border-color: #ddd !important;
+        background: var(--movliv-bg-secondary, #34495e);
+        border-color: var(--movliv-border-primary, #4a5d6b);
+        color: var(--movliv-text-primary, #ecf0f1);
     }
     
-    /* Manter cores específicas para outros elementos */
     .movliv-cadeira-item {
-        background: #2c3e50;
-        border-color: #34495e;
-        color: #ecf0f1;
+        background: var(--movliv-bg-primary, #2c3e50);
+        border-color: var(--movliv-border-primary, #34495e);
+        color: var(--movliv-text-primary, #ecf0f1);
     }
     
     .movliv-historico {
-        background: #2c3e50;
-        border-color: #34495e;
+        background: var(--movliv-bg-primary, #2c3e50);
+        border-color: var(--movliv-border-primary, #34495e);
     }
     
     .movliv-historico h3 {
-        background: #34495e;
-        color: #ecf0f1;
+        background: var(--movliv-bg-secondary, #34495e);
+        color: var(--movliv-text-primary, #ecf0f1);
+    }
+    
+    .movliv-filtros {
+        background: var(--movliv-bg-secondary, #34495e);
+        color: var(--movliv-text-primary, #ecf0f1);
+    }
+    
+    .movliv-stat-card {
+        background: var(--movliv-bg-primary, #2c3e50);
+        border-color: var(--movliv-border-primary, #34495e);
+        color: var(--movliv-text-primary, #ecf0f1);
+    }
+    
+    .movliv-form-group input::placeholder,
+    .movliv-form-group textarea::placeholder {
+        color: var(--movliv-text-secondary, #bdc3c7);
+    }
+    
+    .movliv-form-group select option {
+        background: var(--movliv-bg-secondary, #34495e);
+        color: var(--movliv-text-primary, #ecf0f1);
+    }
+    
+    .movliv-filtros-row select {
+        background: var(--movliv-bg-secondary, #34495e);
+        color: var(--movliv-text-primary, #ecf0f1);
     }
 } 
-/* ==================== FORMULÁRIO DE EMPRÉSTIMO - PADRINHO ==================== */
-.movliv-form .form-section {
-    background: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 20px;
-    margin: 20px 0;
-}
-
-.movliv-form .form-section h4 {
-    margin: 0 0 10px 0;
-    color: #333;
-    font-size: 16px;
-    font-weight: 600;
-}
-
-.movliv-form .form-description {
-    color: #666;
-    font-style: italic;
-    margin-bottom: 15px;
-    font-size: 14px;
-}
-
-.movliv-form .form-row-group {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    margin-bottom: 15px;
-}
-
-@media (max-width: 768px) {
-    .movliv-form .form-row-group {
-        grid-template-columns: 1fr;
-    }
-}
-
-.movliv-form input[type="text"],
-.movliv-form select {
-    width: 100%;
-    padding: 8px 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 14px;
-}
-
-.movliv-form input[type="text"]:focus,
-.movliv-form select:focus {
-    border-color: #007cba;
-    outline: none;
-    box-shadow: 0 0 0 1px #007cba;
-}
-
-.movliv-form label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: 500;
-    color: #333;
-}
