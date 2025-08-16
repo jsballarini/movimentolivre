@@ -1,6 +1,5 @@
 # Integração com Plugin de CPF Externo
 
-**Data**: 2025-01-10  
 **Tipo**: REFATORAÇÃO - Integração de Plugin  
 **Prioridade**: ALTA  
 **Status**: ✅ IMPLEMENTADO
