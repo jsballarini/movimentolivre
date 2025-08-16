@@ -1,6 +1,6 @@
 # Correção da Redução Duplicada de Estoque
 
-**Data:** 13/01/2025  
+**Data:** 13/07/2025  
 **Versão:** 0.0.1  
 **Autor:** Juliano Ballarini  
 
