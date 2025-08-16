@@ -148,7 +148,6 @@ Se o problema persistir:
 4. Consulte a documentação do seu provedor de hospedagem
 
 ## Data da Correção
-
-**Data**: 2024-12-19  
+ 
 **Versão**: 0.0.4  
 **Status**: ✅ Implementado
