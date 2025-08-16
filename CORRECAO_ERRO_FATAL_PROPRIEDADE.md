@@ -160,7 +160,6 @@ AND post_status IN ('wc-processing', 'wc-completed')
 
 ---
 
-**Data da correção**: 2025-07-13  
 **Prioridade**: CRÍTICA  
 **Status**: ✅ CORRIGIDO  
 **Testado**: ✅ SIM  
