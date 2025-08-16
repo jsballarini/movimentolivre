@@ -162,4 +162,4 @@ As classes CSS foram **mantidas** porque são usadas em outros contextos:
 - **`class-order-hooks.php`**: Integração com pedidos/WooCommerce
 
 ## Data da Correção
-<?php echo date('d/m/Y H:i'); ?> - Versão 0.0.1 
+Versão 0.0.1 
