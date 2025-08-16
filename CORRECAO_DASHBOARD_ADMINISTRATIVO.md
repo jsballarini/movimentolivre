@@ -254,7 +254,6 @@ if ( $order && $order->get_status() === 'processing' ) {
 
 ---
 
-**Data da correção**: 2025-07-10  
 **Prioridade**: CRÍTICA  
 **Status**: ✅ CORRIGIDO  
 **Testado**: ✅ SIM  
