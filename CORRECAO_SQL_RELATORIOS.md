@@ -1,6 +1,6 @@
 # Correção SQL dos Relatórios
 
-**Data**: 2025-01-10  
+**Data**: 2025-07-10  
 **Tipo**: CORREÇÃO CRÍTICA - SQL  
 **Prioridade**: ALTA  
 **Status**: ✅ CORRIGIDO
