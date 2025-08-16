@@ -1,6 +1,5 @@
 # 📋 RESUMO EXECUTIVO - Correções Versão 0.0.6
 
-**Data:** 13 de Janeiro de 2025  
 **Versão:** 0.0.6  
 **Tipo:** Correções Críticas - Sistema de Status  
 **Autor:** Juliano Ballarini  
