@@ -4,11 +4,14 @@
 ![WooCommerce](https://img.shields.io/badge/WooCommerce-8.0+-purple.svg)
 ![PHP](https://img.shields.io/badge/PHP-8.0+-777BB4.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
-![Version](https://img.shields.io/badge/version-0.0.5-orange.svg)
+![Version](https://img.shields.io/badge/version-0.0.8-orange.svg)
+![Última Atualização](https://img.shields.io/badge/última%20atualização-16%2F08%2F2025-blue.svg)
 
 **Plugin WordPress que transforma o WooCommerce em um sistema social de empréstimos gratuitos de cadeiras de rodas para o Instituto Bernardo Ferreira - Um Legado em Movimento.**
 
-**🆕 Versão 0.0.5**: Correções na geração de PDFs (autoload Dompdf, teste cross‑platform, fallback para HTML quando sem biblioteca instalada).
+**🆕 Versão 0.0.8**: Sistema de proteção por senha para shortcode de lista de cadeiras, configurações aprimoradas e controle de acesso robusto.
+
+**📅 Última Atualização**: 16/08/2025
 
 ---
 
@@ -56,6 +59,13 @@ O Instituto Bernardo Ferreira é uma organização dedicada a proporcionar mobil
 - **Colaborador**: Gestão de empréstimos e cadeiras
 - **Avaliador**: Aprovação/reprovação pós-devolução
 - **Administrador**: Controle completo e relatórios
+
+### 🔒 **NOVO: Sistema de Proteção por Senha**
+- **Shortcode Protegido**: `[movliv_lista_cadeiras]` agora com proteção por senha
+- **Controle de Acesso**: Configuração de senha no painel administrativo
+- **Acesso Direto**: Administradores acessam sem senha
+- **Sessão Persistente**: Validação mantida por 24 horas
+- **Liberação Automática**: Funciona sem senha quando campo estiver vazio
 
 ### 📄 Documentação Automática
 - **Geração de PDFs**: Formulários automáticos para todas as etapas
@@ -136,6 +146,7 @@ Após a ativação, acesse `Movimento Livre > Configurações`:
 - **Limite de Empréstimos**: Defina quantos empréstimos por CPF (padrão: 2)
 - **Email de Notificações**: Configure email para receber alertas
 - **Textos Personalizados**: Customize mensagens dos PDFs
+- **🔒 Senha do Shortcode**: Configure senha para proteger lista de cadeiras
 
 ### 2. Configuração de Produtos
 
@@ -166,7 +177,7 @@ Crie páginas e utilize os shortcodes:
 // Página de Devolução  
 [movliv_form_devolucao]
 
-// Lista de Cadeiras
+// Lista de Cadeiras (PROTEGIDA POR SENHA)
 [movliv_lista_cadeiras]
 
 // Dashboard do Usuário
@@ -241,7 +252,7 @@ Crie páginas e utilize os shortcodes:
 
 ```php
 [movliv_lista_cadeiras status="pronta" limite="10"]
-// Lista cadeiras disponíveis
+// Lista cadeiras disponíveis (PROTEGIDA POR SENHA)
 
 [movliv_historico_emprestimos usuario_id="123"]
 // Histórico de empréstimos do usuário
@@ -466,9 +477,13 @@ Este projeto foi inspirado pela necessidade real de democratizar o acesso a equi
 
 - [x] **v0.0.1** - Sistema básico de empréstimos
 - [x] **v0.0.2** - Sistema de Padrinho/Responsável
-- [ ] **v0.1.0** - Sistema de avaliações e manutenção
-- [ ] **v0.2.0** - Relatórios avançados e analytics
-- [ ] **v0.3.0** - Aplicativo mobile
+- [x] **v0.0.3** - Sistema de avaliações e manutenção
+- [x] **v0.0.4** - Relatórios avançados e analytics
+- [x] **v0.0.5** - Correções na geração de PDFs
+- [x] **v0.0.6** - Correções críticas de status
+- [x] **v0.0.7** - Suporte a temas escuros
+- [x] **v0.0.8** - Sistema de proteção por senha
+- [ ] **v0.1.0** - Aplicativo mobile
 - [ ] **v1.0.0** - Versão estável completa
 
 ### Estatísticas
