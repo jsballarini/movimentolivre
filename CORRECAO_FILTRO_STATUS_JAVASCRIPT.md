@@ -1,6 +1,5 @@
 # 🔧 CORREÇÃO: Filtro de Status via JavaScript (Solução Definitiva)
 
-**Data:** 10 de Julho de 2025  
 **Versão:** 0.0.1  
 **Tipo:** Correção Crítica - Reescrita de Funcionalidade  
 
