@@ -1,6 +1,6 @@
 # Correção: Duplicação de Campos CPF no Checkout
 
-**Data**: 2025-01-10  
+**Data**: 2025-07-10  
 **Tipo**: HOTFIX - Correção de Interface  
 **Prioridade**: ALTA  
 **Status**: ✅ RESOLVIDO
