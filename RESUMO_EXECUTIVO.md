@@ -1,6 +1,5 @@
 # 📊 RESUMO EXECUTIVO - Movimento Livre
 
-**Data**: 14/07/2025  
 **Versão**: 0.0.1  
 **Status**: ✅ **PRONTO PARA PRODUÇÃO**
 
