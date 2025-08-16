@@ -268,7 +268,6 @@ public function enqueue_admin_scripts( $hook ) {
 
 ---
 
-**Data da correção**: 2025-07-13  
 **Prioridade**: CRÍTICA  
 **Status**: ✅ CORRIGIDO  
 **Testado**: ✅ DASHBOARD + GRÁFICOS  
