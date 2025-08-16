@@ -77,7 +77,6 @@ Porém, no banco de dados do WooCommerce, os status corretos são **sem** o pref
 - Validação da consistência entre diferentes abas dos relatórios
 
 ## Data da Correção
-**Data:** 24/07/2025
 **Desenvolvedor:** Juliano Ballarini
 **Versão:** 0.0.5
 
