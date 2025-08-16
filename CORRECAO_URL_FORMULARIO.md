@@ -1,6 +1,5 @@
 # Correção da URL do Formulário de Empréstimo
 
-**Data:** 13/07/2025  
 **Versão:** 0.0.2  
 **Autor:** Juliano Ballarini  
 
