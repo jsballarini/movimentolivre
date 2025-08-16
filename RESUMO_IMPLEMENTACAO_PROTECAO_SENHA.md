@@ -2,7 +2,6 @@
 
 ## 📋 **VISÃO GERAL**
 
-**Data de Implementação**: 15/08/2025  
 **Versão**: 0.0.8  
 **Status**: ✅ **IMPLEMENTADO E FUNCIONAL**  
 **Funcionalidade**: Proteção por senha do shortcode `[movliv_lista_cadeiras]`
