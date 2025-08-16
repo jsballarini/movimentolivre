@@ -5,7 +5,7 @@
 ![WordPress](https://img.shields.io/badge/WordPress-6.0+-blue.svg?style=for-the-badge)
 ![WooCommerce](https://img.shields.io/badge/WooCommerce-8.0+-purple.svg?style=for-the-badge)
 
-**Data de Conclusão**: 10 de Janeiro de 2025  
+**Data de Conclusão**: 10 de Agosto de 2025  
 **Desenvolvedor**: Juliano Ballarini  
 **Cliente**: Instituto Bernardo Ferreira - Um Legado em Movimento
 
