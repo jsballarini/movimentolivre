@@ -1,6 +1,6 @@
 # Implementação do Fluxo de Checkout para Empréstimos Gratuitos
 
-**Data:** 13/01/2025  
+**Data:** 15/07/2025  
 **Versão:** 0.0.1  
 **Autor:** Juliano Ballarini  
 
