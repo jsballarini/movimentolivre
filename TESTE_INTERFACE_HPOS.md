@@ -1,6 +1,5 @@
 # 🧪 TESTE: Interface HPOS - High Performance Order Storage
 
-**Data:** 10 de Janeiro de 2025  
 **Versão:** 0.0.1  
 **Tipo:** Guia de Teste - Interface Nova do WooCommerce  
 
