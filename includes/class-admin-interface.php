@@ -300,6 +300,23 @@ class MOVLIV_Admin_Interface {
                             <p class="description"><?php _e( 'Email que receberá notificações do sistema', 'movimento-livre' ); ?></p>
                         </td>
                     </tr>
+                    
+                    <tr>
+                        <th scope="row"><?php _e( 'Senha da Lista de Cadeiras', 'movimento-livre' ); ?></th>
+                        <td>
+                            <input type="password" name="senha_shortcode" value="" class="regular-text" autocomplete="new-password">
+                            <p class="description">
+                                <?php 
+                                if ( ! empty( $config['senha_shortcode_hash'] ) ) {
+                                    echo '<span style="color: #28a745;">✓ Senha configurada</span><br>';
+                                } else {
+                                    echo '<span style="color: #dc3545;">✗ Nenhuma senha configurada (acesso liberado)</span><br>';
+                                }
+                                _e( 'Deixe em branco para liberar acesso sem senha. Esta senha protege a listagem de cadeiras no site.', 'movimento-livre' ); 
+                                ?>
+                            </p>
+                        </td>
+                    </tr>
                 </table>
                 
                 <?php submit_button(); ?>
@@ -315,6 +332,16 @@ class MOVLIV_Admin_Interface {
             'limite_emprestimos' => intval( $_POST['limite_emprestimos'] ),
             'email_notificacoes' => sanitize_email( $_POST['email_notificacoes'] )
         );
+        
+        // Processa senha do shortcode
+        if ( ! empty( $_POST['senha_shortcode'] ) ) {
+            // Se foi fornecida uma nova senha, criptografa e salva
+            $config['senha_shortcode_hash'] = wp_hash_password( $_POST['senha_shortcode'] );
+        } elseif ( isset( $_POST['senha_shortcode'] ) && $_POST['senha_shortcode'] === '' ) {
+            // Se o campo foi enviado vazio, remove a senha existente
+            $config['senha_shortcode_hash'] = '';
+        }
+        // Se o campo não foi enviado, mantém a senha existente
         
         update_option( 'movliv_config', $config );
     }

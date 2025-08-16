@@ -1,5 +1,28 @@
 # 📋 CHANGELOG - Movimento Livre
 
+## [0.0.8] - 2025-08-15
+
+### ✨ Adicionado
+- **Proteção por senha no shortcode `[movliv_lista_cadeiras]`**
+  - Campo de configuração para definir senha no painel administrativo
+  - Sistema de autenticação para usuários não-administradores
+  - Acesso direto para administradores logados
+  - Liberação automática quando campo de senha estiver vazio
+  - Persistência de sessão após validação da senha
+
+### 🔧 Melhorado
+- Interface de configurações com campo de senha do shortcode
+- Sistema de permissões mais robusto para controle de acesso
+
+### 🐛 Corrigido
+- Nenhuma correção nesta versão
+
+### 📚 Documentação
+- Atualização da documentação de configurações
+- Guia de uso da proteção por senha
+
+---
+
 ## [0.0.7] - 2025-10-15
 
 ### 🎨 **SUPORTE A TEMAS ESCUROS**

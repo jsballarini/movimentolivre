@@ -981,6 +981,203 @@ class MOVLIV_Shortcodes {
      * [movliv_lista_cadeiras]
      */
     public function shortcode_lista_cadeiras( $atts ) {
+        // Verifica se é um administrador - acesso direto
+        if ( current_user_can( 'administrator' ) || current_user_can( 'manage_woocommerce' ) ) {
+            return $this->get_lista_cadeiras_content();
+        }
+        
+        // Verifica se o usuário já foi autenticado via senha
+        if ( isset( $_COOKIE['movliv_shortcode_auth'] ) && wp_verify_nonce( $_COOKIE['movliv_shortcode_auth'], 'movliv_shortcode_auth' ) ) {
+            return $this->get_lista_cadeiras_content();
+        }
+        
+        // Verifica se uma senha foi enviada
+        if ( isset( $_POST['movliv_shortcode_senha'] ) ) {
+            $senha_digitada = sanitize_text_field( $_POST['movliv_shortcode_senha'] );
+            $config = get_option( 'movliv_config', array() );
+            
+            // Se não há senha configurada, libera acesso
+            if ( empty( $config['senha_shortcode_hash'] ) ) {
+                $this->set_shortcode_auth_cookie();
+                return $this->get_lista_cadeiras_content();
+            }
+            
+            // Verifica se a senha está correta
+            if ( wp_check_password( $senha_digitada, $config['senha_shortcode_hash'] ) ) {
+                $this->set_shortcode_auth_cookie();
+                return $this->get_lista_cadeiras_content();
+            } else {
+                $erro_senha = __( 'Senha incorreta. Tente novamente.', 'movimento-livre' );
+            }
+        }
+        
+        // Exibe formulário de senha
+        return $this->get_formulario_senha( $erro_senha ?? '' );
+    }
+    
+    /**
+     * Define cookie de autenticação para o shortcode
+     */
+    private function set_shortcode_auth_cookie() {
+        $nonce = wp_create_nonce( 'movliv_shortcode_auth' );
+        setcookie( 'movliv_shortcode_auth', $nonce, time() + ( 24 * 60 * 60 ), COOKIEPATH, COOKIE_DOMAIN, is_ssl(), true );
+    }
+    
+    /**
+     * Exibe formulário de senha
+     */
+    private function get_formulario_senha( $erro = '' ) {
+        ob_start();
+        ?>
+        <div class="movliv-formulario-senha">
+            <div class="movliv-senha-container">
+                <h3><?php _e( '🔒 Acesso Protegido', 'movimento-livre' ); ?></h3>
+                <p><?php _e( 'Esta área é protegida por senha. Digite a senha para visualizar as cadeiras disponíveis.', 'movimento-livre' ); ?></p>
+                
+                <?php if ( ! empty( $erro ) ) : ?>
+                    <div class="movliv-erro-senha">
+                        <p><?php echo esc_html( $erro ); ?></p>
+                    </div>
+                <?php endif; ?>
+                
+                <form method="post" class="movliv-form-senha">
+                    <div class="movliv-campo-senha">
+                        <label for="movliv_shortcode_senha"><?php _e( 'Senha:', 'movimento-livre' ); ?></label>
+                        <input type="password" 
+                               id="movliv_shortcode_senha" 
+                               name="movliv_shortcode_senha" 
+                               required 
+                               autocomplete="current-password"
+                               placeholder="<?php esc_attr_e( 'Digite a senha', 'movimento-livre' ); ?>">
+                    </div>
+                    
+                    <div class="movliv-botao-senha">
+                        <button type="submit" class="button button-primary">
+                            <?php _e( 'Acessar Lista de Cadeiras', 'movimento-livre' ); ?>
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="movliv-info-senha">
+                    <p><small><?php _e( '💡 Dica: Se você não tem a senha, entre em contato com o administrador do sistema.', 'movimento-livre' ); ?></small></p>
+                </div>
+            </div>
+        </div>
+        
+        <style>
+        .movliv-formulario-senha {
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        
+        .movliv-senha-container {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .movliv-senha-container h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        
+        .movliv-senha-container p {
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        
+        .movliv-erro-senha {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        
+        .movliv-form-senha {
+            margin-bottom: 20px;
+        }
+        
+        .movliv-campo-senha {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        .movliv-campo-senha label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .movliv-campo-senha input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .movliv-campo-senha input:focus {
+            outline: none;
+            border-color: #0073aa;
+            box-shadow: 0 0 0 3px rgba(0,115,170,0.1);
+        }
+        
+        .movliv-botao-senha .button {
+            background: #0073aa;
+            color: white;
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .movliv-botao-senha .button:hover {
+            background: #005a87;
+        }
+        
+        .movliv-info-senha {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        .movliv-info-senha p {
+            margin: 0;
+            color: #888;
+            font-style: italic;
+        }
+        
+        @media (max-width: 600px) {
+            .movliv-formulario-senha {
+                margin: 20px;
+                padding: 10px;
+            }
+            
+            .movliv-senha-container {
+                padding: 20px;
+            }
+        }
+        </style>
+        <?php
+        return ob_get_clean();
+    }
+    
+    /**
+     * Obtém o conteúdo da lista de cadeiras
+     */
+    private function get_lista_cadeiras_content() {
         global $wpdb;
 
         // Busca cadeiras prontas com estoque disponível
