@@ -1,6 +1,5 @@
 # 🔧 CORREÇÃO: Status de Pedidos "Rascunho" ao invés de "Aguardando"
 
-**Data:** 10 de julho de 2025  
 **Versão:** 0.0.1  
 **Tipo:** Correção Crítica  
 
