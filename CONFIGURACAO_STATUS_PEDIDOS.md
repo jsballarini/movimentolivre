@@ -1,6 +1,5 @@
 # 📋 CONFIGURAÇÃO DOS STATUS DE PEDIDOS - Movimento Livre
 
-**Data:** 10 de Julho de 2025  
 **Versão:** 0.0.1  
 **Tipo:** Especificação de Status - Implementação Final  
 
