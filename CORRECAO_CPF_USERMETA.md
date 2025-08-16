@@ -115,11 +115,6 @@ wp_usermeta (meta do usuário)
 - ✅ Validação dos JOINs com tabelas corretas
 - ✅ Teste da função helper em diferentes contextos
 
-## Data da Correção
-**Data:** 02/01/2025  
-**Desenvolvedor:** Juliano Ballarini  
-**Versão:** 0.13.3
-
 ## Observações Técnicas
 
 Esta correção resolve um problema fundamental de arquitetura onde o sistema buscava dados em local incorreto. Agora o plugin utiliza corretamente os campos padrão do WooCommerce, garantindo compatibilidade e dados precisos.
