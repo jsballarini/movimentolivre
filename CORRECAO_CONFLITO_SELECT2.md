@@ -1,6 +1,5 @@
 # 🔧 CORREÇÃO: Conflito com Outros Campos Select2
 
-**Data:** 10 de Julho de 2025  
 **Versão:** 0.0.1  
 **Tipo:** Correção Crítica - Conflito JavaScript  
 
