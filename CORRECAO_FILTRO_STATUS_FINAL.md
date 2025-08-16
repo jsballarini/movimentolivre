@@ -1,6 +1,5 @@
 # 🔧 CORREÇÃO FINAL: Filtro de Status de Pedidos
 
-**Data:** 10 de Julho de 2025  
 **Versão:** 0.0.1  
 **Tipo:** Correção Crítica - Abordagem Robusta  
 
