@@ -1,6 +1,5 @@
 # Correção do Status Inicial dos Pedidos de Empréstimo
 
-**Data:** 13/07/2025  
 **Versão:** 0.0.1  
 **Autor:** Juliano Ballarini  
 
