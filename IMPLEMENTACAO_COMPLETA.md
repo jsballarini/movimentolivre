@@ -5,7 +5,6 @@
 ![WordPress](https://img.shields.io/badge/WordPress-6.0+-blue.svg?style=for-the-badge)
 ![WooCommerce](https://img.shields.io/badge/WooCommerce-8.0+-purple.svg?style=for-the-badge)
 
-**Data de Conclusão**: 10 de Agosto de 2025  
 **Desenvolvedor**: Juliano Ballarini  
 **Cliente**: Instituto Bernardo Ferreira - Um Legado em Movimento
 
@@ -396,20 +395,6 @@ movimento-livre/
 
 ---
 
-## 🎯 **ROADMAP FUTURO**
-
-### 📅 **Versões Planejadas**
-
-| Versão | Prazo Estimado | Principais Funcionalidades |
-|--------|----------------|----------------------------|
-| **v0.1.0** | Q2 2025 | Sistema de manutenção, APIs externas, agendamento |
-| **v0.2.0** | Q4 2025 | Dashboard público, reservas, múltiplos equipamentos |
-| **v0.3.0** | Q2 2026 | PWA, app mobile, interface otimizada |
-| **v0.4.0** | Q4 2026 | LGPD compliance, segurança avançada |
-| **v1.0.0** | Q2 2027 | Versão estável completa, internacionalização |
-
----
-
 ## 🏆 **RECONHECIMENTOS**
 
 ### 👨‍💻 **Equipe de Desenvolvimento**
@@ -486,6 +471,5 @@ Um **plugin WordPress profissional** que transforma o WooCommerce em um **sistem
 
 *Desenvolvido com ❤️ para o Instituto Bernardo Ferreira - Um Legado em Movimento*
 
-**Data**: 10 de Janeiro de 2025  
 **Autor**: Juliano Ballarini  
 **Versão**: 0.0.1 - Implementação Completa 
