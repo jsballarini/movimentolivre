@@ -1,6 +1,5 @@
 # Remoção de Debug dos Relatórios
 
-**Data**: 2025-01-10  
 **Tipo**: LIMPEZA DE CÓDIGO  
 **Prioridade**: MÉDIA  
 **Status**: ✅ CONCLUÍDO
